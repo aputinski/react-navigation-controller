@@ -1,0 +1,36 @@
+{
+  "name": "react-navigation-controller",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "webpack-dev-server --content-base examples/ --port 3000 --hot",
+    "test": "./node_modules/karma/bin/karma start",
+    "dist": "babel src --out-dir dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:aputinski/react-navigation-controller.git"
+  },
+  "author": "Adam Putinski",
+  "dependencies": {
+    "classnames": "^1.2.0",
+    "rebound": "0.0.12"
+  },
+  "devDependencies": {
+    "babel": "^4.7.16",
+    "babel-loader": "^4.2.0",
+    "chai": "^2.2.0",
+    "karma": "^0.12.31",
+    "karma-chai": "^0.1.0",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-mocha": "^0.1.10",
+    "karma-spec-reporter": "0.0.18",
+    "karma-webpack": "^1.5.0",
+    "mocha": "^2.2.1",
+    "react": "0.13.1",
+    "uglify-js": "^2.4.17",
+    "webpack": "^1.7.3",
+    "webpack-dev-server": "^1.7.0"
+  }
+}

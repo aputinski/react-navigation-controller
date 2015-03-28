@@ -1,0 +1,42 @@
+.ReactNavigationController {
+  position: relative;
+  width: 320px;
+  height: 480px;
+  background: #EFEFEF;
+  overflow: hidden;
+}
+
+.ReactNavigationControllerView,
+.ReactNavigationControllerViewContent {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.ReactNavigationControllerViewContent {
+
+}
+
+.ReactNavigationControllerViewContent div {
+  margin: auto;
+}
+
+.ReactNavigationControllerViewContent button {
+  display: block;
+  padding: 1em 2em;
+  margin: 1em auto;
+  background: black;
+  border: 2px solid white;
+  border-radius: 4px;
+  color: white;
+  font-size: 1em;
+  outline: none;
+}
