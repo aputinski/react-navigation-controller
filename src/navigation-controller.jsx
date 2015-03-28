@@ -36,7 +36,7 @@ class NavigationController extends React.Component {
     // Setup
     this.__isTransitioning = false;
     this.__viewStates = [];
-    this.__viewIdxs = [0,1];
+    this.__viewIndexes = [0,1];
     // Animation
     this.__springSystem = new rebound.SpringSystem();
     this.__viewSpring = this.__springSystem.createSpring(15, 5);
@@ -53,8 +53,10 @@ class NavigationController extends React.Component {
     // Position the wrappers
     this.__animateViews(0);
     // Push the last view
-    const view = last(this.props.views);
-    this.pushView(view, 'none');
+    this.pushView(
+      last(this.props.views),
+      'none'
+    );
   }
 
   componentWillUnmount() {
@@ -71,7 +73,7 @@ class NavigationController extends React.Component {
     this.__isTransitioning = false;
     // Reset the spring
     this.__viewSpring.setCurrentValue(0);
-    const [a,b] = this.__viewIdxs;
+    const [a,b] = this.__viewIndexes;
     // Hide the previous view wrapper
     const prevViewWrapper = this[`__view-wrapper-${a}`];
           prevViewWrapper.style.display = 'none';
@@ -79,11 +81,10 @@ class NavigationController extends React.Component {
     const mountedViews = [];
           mountedViews[a] = null;
           mountedViews[b] = last(this.state.views);
-    // Prev view
     this.setState({
       mountedViews: mountedViews
     }, () => {
-      this.__viewIdxs = this.__viewIdxs[0] === 0 ? [1,0] : [0,1];
+      this.__viewIndexes = this.__viewIndexes[0] === 0 ? [1,0] : [0,1];
     });
   }
 
@@ -113,7 +114,7 @@ class NavigationController extends React.Component {
         y2 = mapValueInRange(value, 0, 1, -100, 0);
         break;
     }
-    const [a,b] = this.__viewIdxs;
+    const [a,b] = this.__viewIndexes;
     const prevView = this[`__view-wrapper-${a}`];
     const nextView = this[`__view-wrapper-${b}`];
     requestAnimationFrame(() => {
@@ -130,7 +131,7 @@ class NavigationController extends React.Component {
   __pushView(view, transition='slide-left') {
     if (!view) return;
     if (this.__isTransitioning) return;
-    const [a,b] = this.__viewIdxs;
+    const [a,b] = this.__viewIndexes;
     let views = this.state.views.slice();
     // Alternate mounted views order
     const mountedViews = [];
@@ -140,16 +141,16 @@ class NavigationController extends React.Component {
     views = views.concat(view);
     // Show the wrappers
     this.__displayViewWrappers('block');
-    // State
+    // Push the view
     this.setState({
       transition,
       views,
       mountedViews
     }, () => {
-      // Prev view
+      // The view that is about to be hidden
       const prevView = this.refs[`view-0`];
       if (prevView) {
-        // Save the state from the previous view
+        // Save the state before it gets unmounted
         this.__viewStates.push(prevView.state);
       }
       // Start the animation
@@ -167,7 +168,7 @@ class NavigationController extends React.Component {
   __popView(transition='slide-right') {
     if (this.state.views.length === 1) return;
     if (this.__isTransitioning) return;
-    const [a,b] = this.__viewIdxs;
+    const [a,b] = this.__viewIndexes;
     const views = dropRight(this.state.views);
     // Alternate mounted views order
     const p = takeRight(this.state.views, 2).reverse();
@@ -176,17 +177,17 @@ class NavigationController extends React.Component {
           mountedViews[b] = p[1];
     // Show the wrappers
     this.__displayViewWrappers('block');
-    // State
+    // Pop the view
     this.setState({
       transition,
       views,
       mountedViews
     }, () => {
-      // Next view
+      // The view that is about to be shown
       const nextView = this.refs[`view-1`];
       if (nextView) {
         const state = this.__viewStates.pop();
-        // Rehydrate the state from the previous view
+        // Rehydrate the state
         if (state) {
           nextView.setState(state);  
         }
@@ -194,6 +195,7 @@ class NavigationController extends React.Component {
       // Start the animation
       if (transition === 'none') {
         this.__viewSpring.setCurrentValue(1);
+        requestAnimationFrame(this.__viewOnSpringAtRest);
       }
       else {
         this.__viewSpring.setEndValue(1);
@@ -203,34 +205,28 @@ class NavigationController extends React.Component {
   }
 
   pushView() {
-    this.__pushView(...arguments);
-    /*setTimeout(() => {
-      this.__pushView(...arguments);
-    }, 200);*/
+    this.__pushView.apply(this, arguments);
   }
 
   popView() {
-    this.__popView(...arguments);
-    /*setTimeout(() => {
-      this.__popView(...arguments);
-    }, 200);*/
+    this.__popView.apply(this, arguments);
   }
 
   renderPrevView() {
     const view = this.state.mountedViews[0];
     if (!view) return null;
     return React.cloneElement(view, {
-      ref: `view-${this.__viewIdxs[0]}`,
+      ref: `view-${this.__viewIndexes[0]}`,
       navigationController: this
     });
   }
 
   renderNextView() {
-    const [a,b] = this.__viewIdxs;
+    const [a,b] = this.__viewIndexes;
     const view = this.state.mountedViews[1];
     if (!view) return null;
     return React.cloneElement(view, {
-      ref: `view-${this.__viewIdxs[1]}`,
+      ref: `view-${this.__viewIndexes[1]}`,
       navigationController: this
     });
   }
@@ -246,12 +242,12 @@ class NavigationController extends React.Component {
       <div className={className}>
         <div
           className={wrapperClassName}
-          ref={`view-wrapper-${0}`}>
+          ref={'view-wrapper-0'}>
           {this.renderPrevView()}
         </div>
         <div
           className={wrapperClassName}
-          ref={`view-wrapper-${1}`}>
+          ref={'view-wrapper-1'}>
           {this.renderNextView()}
         </div>
       </div>

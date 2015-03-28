@@ -2,7 +2,7 @@
   position: relative;
   width: 320px;
   height: 480px;
-  background: #EFEFEF;
+  background: #DDDDDD;
   overflow: hidden;
 }
 
@@ -22,21 +22,26 @@
 }
 
 .ReactNavigationControllerViewContent {
-
+  color: white;
 }
 
 .ReactNavigationControllerViewContent div {
   margin: auto;
 }
 
+.ReactNavigationControllerViewContent h1 {
+  margin: auto;
+  text-align: center;
+}
+
 .ReactNavigationControllerViewContent button {
   display: block;
   padding: 1em 2em;
   margin: 1em auto;
-  background: black;
+  background: #7FDBFF;
   border: 2px solid white;
   border-radius: 4px;
-  color: white;
+  color: #001f3f;
   font-size: 1em;
   outline: none;
 }
