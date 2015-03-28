@@ -49,20 +49,34 @@ class ViewB extends React.Component {
   }
 }
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      views: [
-        <ViewA />,
-        <ViewB />
-      ]
-    }
+class ViewC extends React.Component {
+  onBack() {
+    this.props.navigationController.popView();
   }
   render() {
     return (
-      <NavigationController
-        views={this.state.views} />
+      <div className="ReactNavigationControllerViewContent" style={{background:'#39CCCC'}}>
+        <div>
+          <h1>View C</h1>
+          <button onClick={this.onBack.bind(this)}>Back</button>
+        </div>
+      </div>
+    );
+  }
+}
+
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <main>
+        <NavigationController
+          views={[<ViewA />]} />
+        <NavigationController
+          views={[<ViewA />,<ViewB />,<ViewC />]} />
+      </main>
     );
   }
 }
