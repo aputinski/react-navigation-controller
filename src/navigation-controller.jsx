@@ -49,28 +49,52 @@ class NavigationController extends React.Component {
     this['__view-wrapper-0'] = React.findDOMNode(this.refs[`view-wrapper-0`]);
     this['__view-wrapper-1'] = React.findDOMNode(this.refs[`view-wrapper-1`]);
     // Position the wrappers
-    this.__transformViews();
+    this.__transformViews(0, 0, -100, 0);
     // Push the last view
-    this.pushView(
-      last(this.props.views),
-      'none'
-    );
+    this.pushView(last(this.props.views), 'none');
   }
 
   componentWillUnmount() {
     this.__viewSpring.destroy();
   }
 
-  __viewOnSpringUpdate(spring) {
-    if (!this.__isTransitioning) return;
-    const value = spring.getCurrentValue();
-    this.__transformViews(value);
+  __transformViews(prevX, prevY, nextX, nextY) {
+    const [prev,next] = this.__viewIndexes;
+    const prevView = this[`__view-wrapper-${prev}`];
+    const nextView = this[`__view-wrapper-${next}`];
+    requestAnimationFrame(() => {
+      prevView.style[transformPrefix] = `translate3d(${prevX}%,${prevY}%,0)`;
+      nextView.style[transformPrefix] = `translate3d(${nextX}%,${nextY}%,0)`;
+    });
   }
 
-  __viewOnSpringAtRest(spring) {
+  __animateViews(value=0, transition='none') {
+    let prevX = 0, prevY = 0;
+    let nextX = 0, nextY = 0;
+    switch (transition) {
+      case 'none':
+      case 'slide-left':
+        prevX = mapValueInRange(value, 0, 1, 0, -100);
+        nextX = mapValueInRange(value, 0, 1, 100, 0);
+        break;
+      case 'slide-right':
+        prevX = mapValueInRange(value, 0, 1, 0, 100);
+        nextX = mapValueInRange(value, 0, 1, -100, 0);
+        break;
+      case 'slide-up':
+        prevY = mapValueInRange(value, 0, 1, 0, -100);
+        nextY = mapValueInRange(value, 0, 1, 100, 0);
+        break;
+      case 'slide-down':
+        prevY = mapValueInRange(value, 0, 1, 0, 100);
+        nextY = mapValueInRange(value, 0, 1, -100, 0);
+        break;
+    }
+    return [prevX,prevY,nextX,nextY];
+  }
+
+  __animateViewsComplete() {
     this.__isTransitioning = false;
-    // Reset the spring
-    this.__viewSpring.setCurrentValue(0);
     const [prev,next] = this.__viewIndexes;
     // Hide the previous view wrapper
     const prevViewWrapper = this[`__view-wrapper-${prev}`];
@@ -86,44 +110,22 @@ class NavigationController extends React.Component {
     });
   }
 
-  __transformViews(value=0, transition) {
-    let x1 = 0, y1 = 0;
-    let x2 = 0, y2 = 0;
-    transition = transition || this.state.transition;
-    switch (transition) {
-      case 'none':
-        x1 = mapValueInRange(value, 0, 1, 0, -100);
-        x2 = mapValueInRange(value, 0, 1, 100, 0);
-        break;
-      case 'slide-left':
-        x1 = mapValueInRange(value, 0, 1, 0, -100);
-        x2 = mapValueInRange(value, 0, 1, 100, 0);
-        break;
-      case 'slide-right':
-        x1 = mapValueInRange(value, 0, 1, 0, 100);
-        x2 = mapValueInRange(value, 0, 1, -100, 0);
-        break;
-      case 'slide-up':
-        y1 = mapValueInRange(value, 0, 1, 0, -100);
-        y2 = mapValueInRange(value, 0, 1, 100, 0);
-        break;
-      case 'slide-down':
-        y1 = mapValueInRange(value, 0, 1, 0, 100);
-        y2 = mapValueInRange(value, 0, 1, -100, 0);
-        break;
-    }
-    const [prev,next] = this.__viewIndexes;
-    const prevView = this[`__view-wrapper-${prev}`];
-    const nextView = this[`__view-wrapper-${next}`];
-    requestAnimationFrame(() => {
-      prevView.style[transformPrefix] = `translate3d(${x1}%,${y1}%,0)`;
-      nextView.style[transformPrefix] = `translate3d(${x2}%,${y2}%,0)`;
-    });
-  }
-
-  __displayViewWrappers(value) {
+  __displayViews(value) {
     this['__view-wrapper-0'].style.display = value;
     this['__view-wrapper-1'].style.display = value;
+  }
+
+  __viewOnSpringUpdate(spring) {
+    if (!this.__isTransitioning) return;
+    const value = spring.getCurrentValue();
+    this.__transformViews.apply(this,
+       this.__animateViews(value, this.state.transition)
+    );
+  }
+
+  __viewOnSpringAtRest(spring) {
+    this.__animateViewsComplete();
+    this.__viewSpring.setCurrentValue(0);
   }
 
   __pushView(view, transition='slide-left') {
@@ -138,7 +140,7 @@ class NavigationController extends React.Component {
     // Add the new view
     views = views.concat(view);
     // Show the wrappers
-    this.__displayViewWrappers('block');
+    this.__displayViews('block');
     // Push the view
     this.setState({
       transition,
@@ -174,7 +176,7 @@ class NavigationController extends React.Component {
           mountedViews[prev] = p[0];
           mountedViews[next] = p[1];
     // Show the wrappers
-    this.__displayViewWrappers('block');
+    this.__displayViews('block');
     // Pop the view
     this.setState({
       transition,
