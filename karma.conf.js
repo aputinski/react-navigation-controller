@@ -14,6 +14,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
       'node_modules/react/dist/react-with-addons.js',
+      'node_modules/sinon/pkg/sinon.js',
       'spec/*.jsx'
     ],
 
