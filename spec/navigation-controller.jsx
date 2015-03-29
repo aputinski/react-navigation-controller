@@ -260,38 +260,38 @@ describe('NavigationController', () => {
     });
     it('throws an error if a non-react view is passed', () => {
       expect(() => {
-        controller.pushView({});
+        controller.__pushView({});
       }).to.throw(/view/);
     });
     it('throws an error if an invalid callback is passed', () => {
       expect(() => {
-        controller.pushView(<ViewA />, 'true');
+        controller.__pushView(<ViewA />, 'true');
       }).to.throw(/transitionDone/);
     });
     it('throws an error if an invalid transition is passed', () => {
       expect(() => {
-        controller.pushView(<ViewA />, () => {}, true);
+        controller.__pushView(<ViewA />, () => {}, true);
       }).to.throw(/transition/);
     });
     it('returns early if the controller is already transitioning', () => {
       const spy = sinon.spy(controller, 'setState');
       controller.__isTransitioning = true;
-      controller.pushView(<ViewA />);
+      controller.__pushView(<ViewA />);
       expect(spy.called).not.to.be.true;
     });
     it('shows the view wrappers', () => {
       const spy = sinon.spy(controller, '__displayViews');
-      controller.pushView(<ViewB />);
+      controller.__pushView(<ViewB />);
       expect(spy.calledWith('block')).to.be.true;
     });
     it('appends the view to state.views', (done) => {
-      controller.pushView(<ViewB />, () => {
+      controller.__pushView(<ViewB />, () => {
         expect(controller.state.views[1].type).to.equal(ViewB);
         done();
       }, 'none');
     });
     it('sets state.transition', (done) => {
-      controller.pushView(<ViewB />, () => {
+      controller.__pushView(<ViewB />, () => {
         done();
       }, 'none');
       requestAnimationFrame(() => {
@@ -300,7 +300,7 @@ describe('NavigationController', () => {
     });
     it('sets state.mountedViews', (done) => {
       const [prev,next] = controller.__viewIndexes;
-      controller.pushView(<ViewB />, () => {
+      controller.__pushView(<ViewB />, () => {
         done();
       }, 'none');
       requestAnimationFrame(() => {
@@ -310,18 +310,98 @@ describe('NavigationController', () => {
     });
     it('transitions the views', (done) => {
       const spy = sinon.spy(controller, '__transitionViews');
-      controller.pushView(<ViewB />, () => {}, 'none');
+      controller.__pushView(<ViewB />, () => {}, 'none');
       requestAnimationFrame(() => {
         expect(spy.calledOnce).to.be.true;
         done();
       });
     });
     it('sets __isTransitioning=true', () => {
-      controller.pushView(<ViewB />, () => {}, 'none');
+      controller.__pushView(<ViewB />, () => {}, 'none');
       expect(controller.__isTransitioning).to.be.true;
     });
     it('calls the transitionDone callback', (done) => {
-      controller.pushView(<ViewB />, () => {
+      controller.__pushView(<ViewB />, () => {
+        expect(true).to.be.true;
+        done();
+      });
+    });
+  });
+  describe('#__popView', () => {
+    beforeEach(done => {
+      controller = renderIntoDocument(
+        <NavigationController views={[<ViewA />,<ViewB />]} />
+      );
+      requestAnimationFrame(() => {
+        done();
+      });
+    });
+    it('throws an error if an only one view is in the stack', () => {
+      controller.state.views = [<ViewA />];
+      expect(() => {
+        controller.__popView()
+      }).to.throw(/stack/);
+    });
+    it('throws an error if an invalid callback is passed', () => {
+      expect(() => {
+        controller.__popView('true');
+      }).to.throw(/transitionDone/);
+    });
+    it('throws an error if an invalid transition is passed', () => {
+      expect(() => {
+        controller.__popView(() => {}, true);
+      }).to.throw(/transition/);
+    });
+    it('returns early if the controller is already transitioning', () => {
+      const spy = sinon.spy(controller, 'setState');
+      controller.__isTransitioning = true;
+      controller.__popView();
+      expect(spy.called).not.to.be.true;
+    });
+    it('shows the view wrappers', () => {
+      const spy = sinon.spy(controller, '__displayViews');
+      controller.__popView();
+      expect(spy.calledWith('block')).to.be.true;
+    });
+    it('removes the last view from state.views', (done) => {
+      controller.__popView(() => {
+        expect(controller.state.views).to.have.length(1);
+        expect(controller.state.views[0].type).to.equal(ViewA);
+        done();
+      }, 'none');
+    });
+    it('sets state.transition', (done) => {
+      controller.__popView(() => {
+        done();
+      }, 'none');
+      requestAnimationFrame(() => {
+        expect(controller.state.transition).to.equal('none');
+      });
+    });
+    it('sets state.mountedViews', (done) => {
+      const [prev,next] = controller.__viewIndexes;
+      controller.__popView(() => {
+        done();
+      }, 'none');
+      requestAnimationFrame(() => {
+        expect(controller.state.mountedViews[prev].type).to.equal(ViewB);
+        expect(controller.state.mountedViews[next].type).to.equal(ViewA);
+      });
+    });
+    it('transitions the views', (done) => {
+      const spy = sinon.spy(controller, '__transitionViews');
+      controller.__popView(() => {}, 'none');
+      requestAnimationFrame(() => {
+        expect(spy.calledOnce).to.be.true;
+        done();
+      });
+    });
+    it('sets __isTransitioning=true', () => {
+      controller.__popView(() => {}, 'none');
+      expect(controller.__isTransitioning).to.be.true;
+    });
+    it('calls the transitionDone callback', (done) => {
+      controller.__popView(() => {
         expect(true).to.be.true;
         done();
       });
