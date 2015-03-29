@@ -1,5 +1,5 @@
 body {
-  padding: 0;
+  padding: 1rem;
   margin: 0;
 }
 
@@ -13,7 +13,7 @@ main {
   position: relative;
   width: 320px;
   height: 480px;
-  margin: 1em;
+  margin: 0 1rem 1rem 0;
   background: #DDDDDD;
   overflow: hidden;
 }
