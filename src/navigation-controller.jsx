@@ -20,24 +20,24 @@ const argTypes = {
     name: 'view',
     validate: React.PropTypes.element.isRequired
   },{
+    name: 'transitionDone',
+    validate: React.PropTypes.func
+  },{
     name: 'transition',
     validate: React.PropTypes.oneOfType([
       React.PropTypes.func,
       React.PropTypes.string
     ])
-  },{
-    name: 'done',
-    validate: React.PropTypes.func
   }],
   popView: [{
+    name: 'transitionDone',
+    validate: React.PropTypes.func
+  },{
     name: 'transition',
     validate: React.PropTypes.oneOfType([
       React.PropTypes.func,
       React.PropTypes.string
     ])
-  },{
-    name: 'done',
-    validate: React.PropTypes.func
   }]
 };
 
@@ -89,7 +89,7 @@ class NavigationController extends React.Component {
     // Position the wrappers
     this.__transformViews(0, 0, -100, 0);
     // Push the last view
-    this.pushView(last(this.props.views), 'none');
+    this.pushView(last(this.props.views), () => {}, 'none');
   }
 
   componentWillUnmount() {
@@ -142,6 +142,7 @@ class NavigationController extends React.Component {
           mountedViews[prev] = null;
           mountedViews[next] = last(this.state.views);
     this.setState({
+      transition: null,
       mountedViews: mountedViews
     }, () => {
       this.__viewIndexes = this.__viewIndexes[0] === 0 ? [1,0] : [0,1];
@@ -203,10 +204,9 @@ class NavigationController extends React.Component {
     this.__spring.setCurrentValue(0);
   }
 
-  __pushView(view, transition='slide-left', done) {
-    if (!view) return;
-    if (this.__isTransitioning) return;
+  __pushView(view, done, transition='slide-left') {
     checkArguments('pushView', arguments);
+    if (this.__isTransitioning) return;
     const [prev,next] = this.__viewIndexes;
     let views = this.state.views.slice();
     // Alternate mounted views order
@@ -235,10 +235,12 @@ class NavigationController extends React.Component {
     this.__isTransitioning = true;
   }
 
-  __popView(transition='slide-right') {
-    if (this.state.views.length === 1) return;
-    if (this.__isTransitioning) return;
+  __popView(done, transition='slide-right') {
     checkArguments('popView', arguments);
+    if (this.state.views.length === 1) {
+      throw new Error('popView() can only be called with two or more views in the stack')
+    };
+    if (this.__isTransitioning) return;
     const [prev,next] = this.__viewIndexes;
     const views = dropRight(this.state.views);
     // Alternate mounted views order
@@ -264,7 +266,7 @@ class NavigationController extends React.Component {
         }
       }
       // Transition
-      this.__transitionViews(transition);
+      this.__transitionViews(transition, done);
     });
     this.__isTransitioning = true;
   }
