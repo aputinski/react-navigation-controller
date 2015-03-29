@@ -15,6 +15,44 @@ const {
 const classNames = require('classnames');
 const transformPrefix = getVendorPrefix('transform');
 
+const argTypes = {
+  pushView: [{
+    name: 'view',
+    validate: React.PropTypes.element.isRequired
+  },{
+    name: 'transition',
+    validate: React.PropTypes.oneOfType([
+      React.PropTypes.func,
+      React.PropTypes.string
+    ])
+  },{
+    name: 'done',
+    validate: React.PropTypes.func
+  }],
+  popView: [{
+    name: 'transition',
+    validate: React.PropTypes.oneOfType([
+      React.PropTypes.func,
+      React.PropTypes.string
+    ])
+  },{
+    name: 'done',
+    validate: React.PropTypes.func
+  }]
+};
+
+function checkArguments(method, args) {
+  const argType = argTypes[method];
+  const argMap = {};
+  argType.forEach((arg, index) => {
+    argMap[arg.name] = args[index];
+  });
+  argType.forEach((arg, index) => {
+    const e = arg.validate(argMap, arg.name, method, 'prop');
+    if (e) throw e;
+  });
+}
+
 class NavigationController extends React.Component {
 
   constructor(props) {
@@ -168,6 +206,7 @@ class NavigationController extends React.Component {
   __pushView(view, transition='slide-left', done) {
     if (!view) return;
     if (this.__isTransitioning) return;
+    checkArguments('pushView', arguments);
     const [prev,next] = this.__viewIndexes;
     let views = this.state.views.slice();
     // Alternate mounted views order
@@ -199,6 +238,7 @@ class NavigationController extends React.Component {
   __popView(transition='slide-right') {
     if (this.state.views.length === 1) return;
     if (this.__isTransitioning) return;
+    checkArguments('popView', arguments);
     const [prev,next] = this.__viewIndexes;
     const views = dropRight(this.state.views);
     // Alternate mounted views order
