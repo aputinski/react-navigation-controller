@@ -25,7 +25,7 @@ class NavigationController extends React.Component {
       mountedViews: []
     };
     const autoBind = [
-      '__viewOnSpringUpdate', '__viewOnSpringAtRest'
+      '__onSpringUpdate', '__onSpringAtRest'
     ];
     autoBind.forEach(method => {
       this[method] = this[method].bind(this);
@@ -37,10 +37,10 @@ class NavigationController extends React.Component {
     this.__viewStates = [];
     this.__viewIndexes = [0,1];
     this.__springSystem = new rebound.SpringSystem();
-    this.__viewSpring = this.__springSystem.createSpring(15, 5);
-    this.__viewSpring.addListener({
-      onSpringUpdate: this.__viewOnSpringUpdate.bind(this),
-      onSpringAtRest: this.__viewOnSpringAtRest.bind(this)
+    this.__spring = this.__springSystem.createSpring(15, 5);
+    this.__spring.addListener({
+      onSpringUpdate: this.__onSpringUpdate.bind(this),
+      onSpringAtRest: this.__onSpringAtRest.bind(this)
     });
   }
 
@@ -115,7 +115,43 @@ class NavigationController extends React.Component {
     this['__view-wrapper-1'].style.display = value;
   }
 
-  __viewOnSpringUpdate(spring) {
+  __transitionViews(transition, done) {
+    this.__transitionViewsComplete = () => {
+      delete this.__transitionViewsComplete;
+      if (typeof done === 'function') {
+        done();
+      }
+    };
+    // Built-in transition
+    if (typeof transition === 'string') {
+      // Manually transition the views
+      if (transition === 'none') {
+        this.__transformViews.apply(this,
+          this.__animateViews(1, transition)
+        );
+        requestAnimationFrame(() => {
+          this.__animateViewsComplete();
+          this.__transitionViewsComplete();
+        });
+      }
+      // Otherwise use the springs
+      else {
+        this.__spring.setEndValue(1);
+      }
+    }
+    // Custom transition
+    if (typeof transition === 'function') {
+      const [prev,next] = this.__viewIndexes;
+      const prevView = this[`__view-wrapper-${prev}`];
+      const nextView = this[`__view-wrapper-${next}`]; 
+      transition(prevView, nextView, () => {
+        this.__animateViewsComplete();
+        this.__transitionViewsComplete();
+      });
+    }
+  }
+
+  __onSpringUpdate(spring) {
     if (!this.__isTransitioning) return;
     const value = spring.getCurrentValue();
     this.__transformViews.apply(this,
@@ -123,12 +159,13 @@ class NavigationController extends React.Component {
     );
   }
 
-  __viewOnSpringAtRest(spring) {
+  __onSpringAtRest(spring) {
     this.__animateViewsComplete();
-    this.__viewSpring.setCurrentValue(0);
+    this.__transitionViewsComplete();
+    this.__spring.setCurrentValue(0);
   }
 
-  __pushView(view, transition='slide-left') {
+  __pushView(view, transition='slide-left', done) {
     if (!view) return;
     if (this.__isTransitioning) return;
     const [prev,next] = this.__viewIndexes;
@@ -147,20 +184,14 @@ class NavigationController extends React.Component {
       views,
       mountedViews
     }, () => {
-      // The view that is about to be hidden
+      // The view about to be hidden
       const prevView = this.refs[`view-0`];
       if (prevView) {
         // Save the state before it gets unmounted
         this.__viewStates.push(prevView.state);
       }
-      // Start the animation
-      if (transition === 'none') {
-        this.__viewSpring.setCurrentValue(1);
-        requestAnimationFrame(this.__viewOnSpringAtRest);
-      }
-      else {
-        this.__viewSpring.setEndValue(1);
-      }
+      // Transition
+      this.__transitionViews(transition, done);
     });
     this.__isTransitioning = true;
   }
@@ -183,7 +214,7 @@ class NavigationController extends React.Component {
       views,
       mountedViews
     }, () => {
-      // The view that is about to be shown
+      // The view about to be shown
       const nextView = this.refs[`view-1`];
       if (nextView) {
         const state = this.__viewStates.pop();
@@ -192,14 +223,8 @@ class NavigationController extends React.Component {
           nextView.setState(state);  
         }
       }
-      // Start the animation
-      if (transition === 'none') {
-        this.__viewSpring.setCurrentValue(1);
-        requestAnimationFrame(this.__viewOnSpringAtRest);
-      }
-      else {
-        this.__viewSpring.setEndValue(1);
-      }
+      // Transition
+      this.__transitionViews(transition);
     });
     this.__isTransitioning = true;
   }
@@ -212,7 +237,7 @@ class NavigationController extends React.Component {
     this.__popView.apply(this, arguments);
   }
 
-  renderPrevView() {
+  __renderPrevView() {
     const view = this.state.mountedViews[0];
     if (!view) return null;
     return React.cloneElement(view, {
@@ -221,7 +246,7 @@ class NavigationController extends React.Component {
     });
   }
 
-  renderNextView() {
+  __renderNextView() {
     const view = this.state.mountedViews[1];
     if (!view) return null;
     return React.cloneElement(view, {
@@ -242,12 +267,12 @@ class NavigationController extends React.Component {
         <div
           className={wrapperClassName}
           ref={'view-wrapper-0'}>
-          {this.renderPrevView()}
+          {this.__renderPrevView()}
         </div>
         <div
           className={wrapperClassName}
           ref={'view-wrapper-1'}>
-          {this.renderNextView()}
+          {this.__renderNextView()}
         </div>
       </div>
     );

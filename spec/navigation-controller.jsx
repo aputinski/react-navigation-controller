@@ -193,4 +193,63 @@ describe('NavigationController', () => {
       });
     });
   });
+  describe.only('#__transitionViews', () => {
+    beforeEach(done => {
+      requestAnimationFrame(() => {
+        done();
+      });
+    });
+    it('sets the completion callback', () => {
+      controller.__transitionViews(null, () => {});
+      expect(controller.__transitionViewsComplete).to.be.a('function');
+    });
+    it('sets and calls the completion callback', (done) => {
+      const transitionCallbackSpy = sinon.spy();
+      controller.__transitionViews('none', transitionCallbackSpy);
+      const transitionCompleteSpy = sinon.spy(controller, '__transitionViewsComplete');
+      requestAnimationFrame(() => {
+        expect(transitionCompleteSpy.calledOnce).to.be.true;
+        expect(transitionCallbackSpy.calledOnce).to.be.true;
+        done();
+      });
+    });
+    it('manually runs a "none" transition', (done) => {
+      const transformSpy = sinon.spy(controller, '__transformViews');
+      const animateCompleteSpy = sinon.spy(controller, '__animateViewsComplete');
+      controller.__transitionViews('none');
+      const transitionCompleteSpy = sinon.spy(controller, '__transitionViewsComplete');
+      requestAnimationFrame(() => {
+        expect(transformSpy.calledOnce).to.be.true;
+        expect(animateCompleteSpy.calledOnce).to.be.true;
+        expect(transitionCompleteSpy.calledOnce).to.be.true;
+        done();
+      });
+    });
+    it('runs a built-in spring transition', (done) => {
+      const animateSpy = sinon.spy(controller, '__animateViews');
+      const transformSpy = sinon.spy(controller, '__transformViews');
+      const animateCompleteSpy = sinon.spy(controller, '__animateViewsComplete');
+      controller.__transitionViews('slide-left', function() {
+        expect(animateSpy.callCount).to.be.above(1);
+        expect(transformSpy.callCount).to.be.above(1);
+        expect(animateCompleteSpy.calledOnce).to.be.true;
+        done();
+      });
+      controller.__isTransitioning = true;
+    });
+    it('runs a custom transtion', (done) => {
+      let _prevElement,_nextElement;
+      controller.__transitionViews((prevElement, nextElement, done) => {
+        _prevElement = prevElement;
+        _nextElement = nextElement;
+        prevElement.style[transformPrefix] = 'translate3d(10px, 20px, 0px)';
+        nextElement.style[transformPrefix] = 'translate3d(30px, 40px, 0px)';
+        setTimeout(done, 500);
+      }, () => {
+        expect(_prevElement.style[transformPrefix]).to.equal(`translate3d(10px, 20px, 0px)`);
+        expect(_nextElement.style[transformPrefix]).to.equal(`translate3d(30px, 40px, 0px)`);
+        done();
+      });
+    });
+  });
 })
