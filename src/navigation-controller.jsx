@@ -33,11 +33,9 @@ class NavigationController extends React.Component {
   }
 
   componentWillMount() {
-    // Setup
     this.__isTransitioning = false;
     this.__viewStates = [];
     this.__viewIndexes = [0,1];
-    // Animation
     this.__springSystem = new rebound.SpringSystem();
     this.__viewSpring = this.__springSystem.createSpring(15, 5);
     this.__viewSpring.addListener({
@@ -51,7 +49,7 @@ class NavigationController extends React.Component {
     this['__view-wrapper-0'] = React.findDOMNode(this.refs[`view-wrapper-0`]);
     this['__view-wrapper-1'] = React.findDOMNode(this.refs[`view-wrapper-1`]);
     // Position the wrappers
-    this.__animateViews(0);
+    this.__transformViews();
     // Push the last view
     this.pushView(
       last(this.props.views),
@@ -66,21 +64,21 @@ class NavigationController extends React.Component {
   __viewOnSpringUpdate(spring) {
     if (!this.__isTransitioning) return;
     const value = spring.getCurrentValue();
-    this.__animateViews(value);
+    this.__transformViews(value);
   }
 
   __viewOnSpringAtRest(spring) {
     this.__isTransitioning = false;
     // Reset the spring
     this.__viewSpring.setCurrentValue(0);
-    const [a,b] = this.__viewIndexes;
+    const [prev,next] = this.__viewIndexes;
     // Hide the previous view wrapper
-    const prevViewWrapper = this[`__view-wrapper-${a}`];
+    const prevViewWrapper = this[`__view-wrapper-${prev}`];
           prevViewWrapper.style.display = 'none';
     // Unmount the previous view
     const mountedViews = [];
-          mountedViews[a] = null;
-          mountedViews[b] = last(this.state.views);
+          mountedViews[prev] = null;
+          mountedViews[next] = last(this.state.views);
     this.setState({
       mountedViews: mountedViews
     }, () => {
@@ -88,7 +86,7 @@ class NavigationController extends React.Component {
     });
   }
 
-  __animateViews(value, transition) {
+  __transformViews(value=0, transition) {
     let x1 = 0, y1 = 0;
     let x2 = 0, y2 = 0;
     transition = transition || this.state.transition;
@@ -114,9 +112,9 @@ class NavigationController extends React.Component {
         y2 = mapValueInRange(value, 0, 1, -100, 0);
         break;
     }
-    const [a,b] = this.__viewIndexes;
-    const prevView = this[`__view-wrapper-${a}`];
-    const nextView = this[`__view-wrapper-${b}`];
+    const [prev,next] = this.__viewIndexes;
+    const prevView = this[`__view-wrapper-${prev}`];
+    const nextView = this[`__view-wrapper-${next}`];
     requestAnimationFrame(() => {
       prevView.style[transformPrefix] = `translate3d(${x1}%,${y1}%,0)`;
       nextView.style[transformPrefix] = `translate3d(${x2}%,${y2}%,0)`;
@@ -131,12 +129,12 @@ class NavigationController extends React.Component {
   __pushView(view, transition='slide-left') {
     if (!view) return;
     if (this.__isTransitioning) return;
-    const [a,b] = this.__viewIndexes;
+    const [prev,next] = this.__viewIndexes;
     let views = this.state.views.slice();
     // Alternate mounted views order
     const mountedViews = [];
-          mountedViews[a] = last(views);
-          mountedViews[b] = view;
+          mountedViews[prev] = last(views);
+          mountedViews[next] = view;
     // Add the new view
     views = views.concat(view);
     // Show the wrappers
@@ -168,13 +166,13 @@ class NavigationController extends React.Component {
   __popView(transition='slide-right') {
     if (this.state.views.length === 1) return;
     if (this.__isTransitioning) return;
-    const [a,b] = this.__viewIndexes;
+    const [prev,next] = this.__viewIndexes;
     const views = dropRight(this.state.views);
     // Alternate mounted views order
     const p = takeRight(this.state.views, 2).reverse();
     const mountedViews = [];
-          mountedViews[a] = p[0];
-          mountedViews[b] = p[1];
+          mountedViews[prev] = p[0];
+          mountedViews[next] = p[1];
     // Show the wrappers
     this.__displayViewWrappers('block');
     // Pop the view
@@ -222,7 +220,6 @@ class NavigationController extends React.Component {
   }
 
   renderNextView() {
-    const [a,b] = this.__viewIndexes;
     const view = this.state.mountedViews[1];
     if (!view) return null;
     return React.cloneElement(view, {
@@ -259,7 +256,7 @@ class NavigationController extends React.Component {
 NavigationController.propTypes = {
   views: React.PropTypes.arrayOf(
     React.PropTypes.element
-  )
+  ).isRequired
 };
 
 module.exports = NavigationController;
