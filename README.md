@@ -92,7 +92,7 @@ Any valid React element (`React.PropTypes.element`)
 
 Addtional options
 
-##### `options.transiton` `{number|function}` `default='slide-left'`
+##### `options.transiton` `{number|function}` `default=Transition.type.PUSH_LEFT`
 
 Specify the type of transition:
 
@@ -143,6 +143,8 @@ Pop the last view off the stack
 ##### `options` `{object}`
 
 Addtional options - see [Push()](#push-options)
+
+##### `options.transiton` `{number|function}` `default=Transition.type.PUSH_RIGHT`
 
 ***
 
