@@ -1,19 +1,33 @@
 body {
   padding: 1rem;
   margin: 0;
+  font-family: "Trebuchet MS","Lucida Grande","Lucida Sans Unicode","Lucida Sans",Tahoma,sans-serif;
 }
 
 main {
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
+  padding: 1em;
+  width: 320px;
+  margin: 0 auto;
+}
+
+@media (max-width: 520px) {
+  .main {
+    width: 100%
+  }
+}
+
+h2 {
+  margin: 0 0 0.25em 0;
+}
+
+p {
+  margin: 0 0 0.2em 0;
 }
 
 .ReactNavigationController {
   position: relative;
-  width: 320px;
   height: 480px;
-  margin: 0 1rem 1rem 0;
+  margin: 1em auto 2em auto;
   background: #DDDDDD;
   overflow: hidden;
 }

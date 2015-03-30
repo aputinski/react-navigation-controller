@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --content-base examples/ --port 3000 --hot",
     "test": "./node_modules/karma/bin/karma start",
-    "dist": "babel src --out-dir dist"
+    "example": "webpack"
   },
   "repository": {
     "type": "git",

@@ -2,11 +2,13 @@ module.exports = {
   entry: {
     example: [
       'webpack/hot/dev-server',
-      './examples/example.jsx',
+      './examples/src/example.jsx',
     ]
   },
   output: {
-    filename: '[name].js'
+    path: './examples/assets',
+    filename: '[name].js',
+    publicPath: '/assets/'
   },
   module: {
     loaders: [{

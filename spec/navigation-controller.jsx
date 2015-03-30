@@ -14,7 +14,7 @@ const transformPrefix = getVendorPrefix('transform');
 const {
   ViewA,
   ViewB
-} = require('../examples/views');
+} = require('../examples/src/views');
 
 const rebound = require('rebound');
 
@@ -490,7 +490,7 @@ describe('NavigationController', () => {
       });
     });
   });
-  describe.only('#__setViews', () => {
+  describe('#__setViews', () => {
     beforeEach(done => {
       requestAnimationFrame(() => {
         done();

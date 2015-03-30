@@ -52,8 +52,29 @@ class ViewB extends View {
   }
 }
 
+class ViewC extends View {
+  constructor(props) {
+    super(props);
+    this.state = {
+      color: '#F012BE'
+    };
+  }
+  onBack() {
+    this.props.navigationController.popView();
+  }
+  renderContent() {
+    return (
+      <div>
+        <h1>View C</h1>
+        <button onClick={this.onBack.bind(this)}>Back</button>
+      </div>
+    );
+  }
+}
+
 
 module.exports = {
   ViewA,
-  ViewB
+  ViewB,
+  ViewC
 };

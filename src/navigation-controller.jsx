@@ -83,7 +83,10 @@ class NavigationController extends React.Component {
     this.__viewStates = [];
     this.__viewIndexes = [0,1];
     this.__springSystem = new rebound.SpringSystem();
-    this.__spring = this.__springSystem.createSpring(15, 5);
+    this.__spring = this.__springSystem.createSpring(
+      this.props.transitionTension,
+      this.props.transitionFriction
+    );
     this.__spring.addListener({
       onSpringUpdate: this.__onSpringUpdate.bind(this),
       onSpringAtRest: this.__onSpringAtRest.bind(this)
@@ -424,11 +427,15 @@ NavigationController.propTypes = {
   views: React.PropTypes.arrayOf(
     React.PropTypes.element
   ).isRequired,
-  preserveState: React.PropTypes.bool
+  preserveState: React.PropTypes.bool,
+  transitionTension: React.PropTypes.number,
+  transitionFriction: React.PropTypes.number
 };
 
 NavigationController.defaultProps = {
-  preserveState: false
+  preserveState: false,
+  transitionTension: 10,
+  transitionFriction: 6
 };
 
 module.exports = NavigationController;
