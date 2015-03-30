@@ -13,9 +13,10 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+      'spec/helpers.js',
       'node_modules/react/dist/react-with-addons.js',
       'node_modules/sinon/pkg/sinon.js',
-      'spec/**/*.{jsx,js}'
+      'spec/**/*.spec.{jsx,js}'
     ],
 
     // list of files to exclude
@@ -24,7 +25,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      'spec/**/*.{jsx,js}': ['webpack']
+      'spec/**/*.spec.{jsx,js}': ['webpack']
     },
 
     // test results reporter to use
