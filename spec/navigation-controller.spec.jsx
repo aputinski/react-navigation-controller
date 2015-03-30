@@ -8,7 +8,7 @@ const rebound = require('rebound');
 
 const NavigationController = require('../src/navigation-controller');
 const {
-  transitionType
+  Transition
 } = NavigationController;
 
 const {
@@ -90,46 +90,139 @@ describe('NavigationController', () => {
     
   });
   describe('#__transformViews', () => {
+    beforeEach(done => {
+      requestAnimationFrame(() => {
+        done();
+      });
+    });
     it('translates the views', (done) => {
       controller.__transformViews(10, 20, 30, 40);
       requestAnimationFrame(() => {
-        expect(viewWrapper0.style[transformPrefix]).to.equal(`translate3d(10%, 20%, 0px)`);
-        expect(viewWrapper1.style[transformPrefix]).to.equal(`translate3d(30%, 40%, 0px)`);
+        expect(viewWrapper1.style[transformPrefix]).to.equal(`translate3d(10%, 20%, 0px)`);
+        expect(viewWrapper0.style[transformPrefix]).to.equal(`translate3d(30%, 40%, 0px)`);
         done();
+      });
+    });
+    it('sets the correct zIndex for Reveal transitions', (done) => {
+      controller.setState({
+        transition: Transition.type.REVEAL_DOWN
+      }, () => {
+        controller.__transformViews(10, 20, 30, 40);
+        requestAnimationFrame(() => {
+          expect(viewWrapper0.style.zIndex).to.equal('0');
+          expect(viewWrapper1.style.zIndex).to.equal('1');
+          done();
+        });
+      });
+    });
+    it('sets the correct zIndex for Push/Cover transitions', (done) => {
+      controller.setState({
+        transition: Transition.type.COVER_DOWN
+      }, () => {
+        controller.__transformViews(10, 20, 30, 40);
+        requestAnimationFrame(() => {
+          expect(viewWrapper0.style.zIndex).to.equal('1');
+          expect(viewWrapper1.style.zIndex).to.equal('0');
+          done();
+        });
       });
     });
   });
   describe('#__animateViews', () => {
     let prevX,prevY,nextX,nextY;
     it('PUSH_LEFT', () => {
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, transitionType.PUSH_LEFT);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.PUSH_LEFT);
       expect(prevX).to.equal(0);
       expect(nextX).to.equal(100);
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, transitionType.PUSH_LEFT);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.PUSH_LEFT);
       expect(prevX).to.equal(-100);
       expect(nextX).to.equal(0);
     });
     it('PUSH_RIGHT', () => {
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, transitionType.PUSH_RIGHT);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.PUSH_RIGHT);
       expect(prevX).to.equal(0);
       expect(nextX).to.equal(-100);
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, transitionType.PUSH_RIGHT);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.PUSH_RIGHT);
       expect(prevX).to.equal(100);
       expect(nextX).to.equal(0);
     });
     it('PUSH_UP', () => {
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, transitionType.PUSH_UP);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.PUSH_UP);
       expect(prevY).to.equal(0);
       expect(nextY).to.equal(100);
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, transitionType.PUSH_UP);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.PUSH_UP);
       expect(prevY).to.equal(-100);
       expect(nextY).to.equal(0);
     });
     it('PUSH_DOWN', () => {
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, transitionType.PUSH_DOWN);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.PUSH_DOWN);
       expect(prevY).to.equal(0);
       expect(nextY).to.equal(-100);
-      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, transitionType.PUSH_DOWN);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.PUSH_DOWN);
+      expect(prevY).to.equal(100);
+      expect(nextY).to.equal(0);
+    });
+    it('COVER_LEFT', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.COVER_LEFT);
+      expect(prevX).to.equal(0);
+      expect(nextX).to.equal(100);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.COVER_LEFT);
+      expect(prevX).to.equal(0);
+      expect(nextX).to.equal(0);
+    });
+    it('COVER_RIGHT', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.COVER_RIGHT);
+      expect(prevX).to.equal(0);
+      expect(nextX).to.equal(-100);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.COVER_RIGHT);
+      expect(prevX).to.equal(0);
+      expect(nextX).to.equal(0);
+    });
+    it('COVER_UP', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.COVER_UP);
+      expect(prevY).to.equal(0);
+      expect(nextY).to.equal(100);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.COVER_UP);
+      expect(prevY).to.equal(0);
+      expect(nextY).to.equal(0);
+    });
+    it('COVER_DOWN', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.COVER_DOWN);
+      expect(prevY).to.equal(0);
+      expect(nextY).to.equal(-100);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.COVER_DOWN);
+      expect(prevY).to.equal(0);
+      expect(nextY).to.equal(0);
+    });
+    it('REVEAL_LEFT', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.REVEAL_LEFT);
+      expect(prevX).to.equal(0);
+      expect(nextX).to.equal(0);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.REVEAL_LEFT);
+      expect(prevX).to.equal(-100);
+      expect(nextX).to.equal(0);
+    });
+    it('REVEAL_RIGHT', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.REVEAL_RIGHT);
+      expect(prevX).to.equal(0);
+      expect(nextX).to.equal(0);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.REVEAL_RIGHT);
+      expect(prevX).to.equal(100);
+      expect(nextX).to.equal(0);
+    });
+    it('REVEAL_UP', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.REVEAL_UP);
+      expect(prevY).to.equal(0);
+      expect(nextY).to.equal(0);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.REVEAL_UP);
+      expect(prevY).to.equal(-100);
+      expect(nextY).to.equal(0);
+    });
+    it('REVEAL_DOWN', () => {
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(0, Transition.type.REVEAL_DOWN);
+      expect(prevY).to.equal(0);
+      expect(nextY).to.equal(0);
+      [prevX,prevY,nextX,nextY] = controller.__animateViews(1, Transition.type.REVEAL_DOWN);
       expect(prevY).to.equal(100);
       expect(nextY).to.equal(0);
     });
@@ -208,7 +301,7 @@ describe('NavigationController', () => {
     });
     it('sets and calls the completion callback', (done) => {
       const transitionCallbackSpy = sinon.spy();
-      controller.__transitionViews(transitionType.NONE, transitionCallbackSpy);
+      controller.__transitionViews(Transition.type.NONE, transitionCallbackSpy);
       const transitionCompleteSpy = sinon.spy(controller, '__transitionViewsComplete');
       requestAnimationFrame(() => {
         expect(transitionCompleteSpy.calledOnce).to.be.true;
@@ -219,7 +312,7 @@ describe('NavigationController', () => {
     it('manually runs a "none" transition', (done) => {
       const transformSpy = sinon.spy(controller, '__transformViews');
       const animateCompleteSpy = sinon.spy(controller, '__animateViewsComplete');
-      controller.__transitionViews(transitionType.NONE);
+      controller.__transitionViews(Transition.type.NONE);
       const transitionCompleteSpy = sinon.spy(controller, '__transitionViewsComplete');
       requestAnimationFrame(() => {
         expect(transformSpy.calledOnce).to.be.true;
@@ -232,7 +325,7 @@ describe('NavigationController', () => {
       const animateSpy = sinon.spy(controller, '__animateViews');
       const transformSpy = sinon.spy(controller, '__transformViews');
       const animateCompleteSpy = sinon.spy(controller, '__animateViewsComplete');
-      controller.__transitionViews(transitionType.PUSH_LEFT, function() {
+      controller.__transitionViews(Transition.type.PUSH_LEFT, function() {
         expect(animateSpy.callCount).to.be.above(1);
         expect(transformSpy.callCount).to.be.above(1);
         expect(animateCompleteSpy.calledOnce).to.be.true;
@@ -289,7 +382,7 @@ describe('NavigationController', () => {
     });
     it('appends the view to state.views', (done) => {
       controller.__pushView(<ViewB />, {
-        transition: transitionType.NONE,
+        transition: Transition.type.NONE,
         onComplete() {
           expect(controller.state.views[1].type).to.equal(ViewB);
           done();
@@ -298,19 +391,19 @@ describe('NavigationController', () => {
     });
     it('sets state.transition', (done) => {
       controller.__pushView(<ViewB />, {
-        transition: transitionType.NONE,
+        transition: Transition.type.NONE,
         onComplete() {
           done();
         }
       });
       requestAnimationFrame(() => {
-        expect(controller.state.transition).to.equal(transitionType.NONE);
+        expect(controller.state.transition).to.equal(Transition.type.NONE);
       });
     });
     it('sets state.mountedViews', (done) => {
       const [prev,next] = controller.__viewIndexes;
       controller.__pushView(<ViewB />, {
-        transition: transitionType.PUSH_LEFT,
+        transition: Transition.type.PUSH_LEFT,
         onComplete() {
           expect(controller.state.views[1].type).to.equal(ViewB);
           done();
@@ -323,19 +416,19 @@ describe('NavigationController', () => {
     });
     it('transitions the views', (done) => {
       const spy = sinon.spy(controller, '__transitionViews');
-      controller.__pushView(<ViewB />, { transition: transitionType.NONE });
+      controller.__pushView(<ViewB />, { transition: Transition.type.NONE });
       requestAnimationFrame(() => {
         expect(spy.calledOnce).to.be.true;
         done();
       });
     });
     it('sets __isTransitioning=true', () => {
-      controller.__pushView(<ViewB />, { transition: transitionType.NONE });
+      controller.__pushView(<ViewB />, { transition: Transition.type.NONE });
       expect(controller.__isTransitioning).to.be.true;
     });
     it('calls the transitionDone callback', (done) => {
       controller.__pushView(<ViewB />, {
-        transition: transitionType.NONE,
+        transition: Transition.type.NONE,
         onComplete() {
           expect(true).to.be.true;
           done();
@@ -350,7 +443,7 @@ describe('NavigationController', () => {
         controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
           foo: 'bar'
         });
-        controller.__pushView(<ViewB />, { transition: transitionType.NONE });
+        controller.__pushView(<ViewB />, { transition: Transition.type.NONE });
         requestAnimationFrame(() => {
           expect(controller.__viewStates).to.have.length(1);
           expect(controller.__viewStates[0]).to.have.property('foo');
@@ -402,24 +495,24 @@ describe('NavigationController', () => {
           expect(controller.state.views[0].type).to.equal(ViewA);
           done();
         },
-        transition: transitionType.NONE
+        transition: Transition.type.NONE
       });
     });
     it('sets state.transition', (done) => {
       controller.__popView({
-        transition: transitionType.NONE,
+        transition: Transition.type.NONE,
         onComplete() {
           done();
         }
       });
       requestAnimationFrame(() => {
-        expect(controller.state.transition).to.equal(transitionType.NONE);
+        expect(controller.state.transition).to.equal(Transition.type.NONE);
       });
     });
     it('sets state.mountedViews', (done) => {
       const [prev,next] = controller.__viewIndexes;
       controller.__popView({
-        transition: transitionType.PUSH_RIGHT,
+        transition: Transition.type.PUSH_RIGHT,
         onComplete() {
           done();
         }
@@ -431,14 +524,14 @@ describe('NavigationController', () => {
     });
     it('transitions the views', (done) => {
       const spy = sinon.spy(controller, '__transitionViews');
-      controller.__popView({ transition: transitionType.NONE });
+      controller.__popView({ transition: Transition.type.NONE });
       requestAnimationFrame(() => {
         expect(spy.calledOnce).to.be.true;
         done();
       });
     });
     it('sets __isTransitioning=true', () => {
-      controller.__popView({ transition: transitionType.NONE });
+      controller.__popView({ transition: Transition.type.NONE });
       expect(controller.__isTransitioning).to.be.true;
     });
     it('calls the onComplete callback', (done) => {
@@ -455,10 +548,10 @@ describe('NavigationController', () => {
           foo: 'bar'
         });
         controller.pushView(<ViewB />, {
-          transition: transitionType.NONE,
+          transition: Transition.type.NONE,
           onComplete() {
             controller.popView({
-              transition: transitionType.NONE,
+              transition: Transition.type.NONE,
              onComplete() {
                 expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
                   .not.to.have.property('foo');
@@ -479,9 +572,9 @@ describe('NavigationController', () => {
         });
         controller.pushView(<ViewB />, {
           onComplete() {
-            transition: transitionType.NONE,
+            transition: Transition.type.NONE,
             controller.popView({
-              transition: transitionType.NONE,
+              transition: Transition.type.NONE,
               onComplete() {
                 expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
                   .to.have.property('foo');
@@ -501,7 +594,7 @@ describe('NavigationController', () => {
     });
     it('pushes the last view on the stack', () => {
       controller.__setViews([<ViewB />], {
-        transition: transitionType.NONE,
+        transition: Transition.type.NONE,
         onComplete() {
           expect(controller.state.views).to.have.length(1);
         }
@@ -509,7 +602,7 @@ describe('NavigationController', () => {
     });
     it('clears the saved view states', () => {
       controller.__setViews([<ViewB />], {
-        transition: transitionType.NONE,
+        transition: Transition.type.NONE,
         onComplete() {
           expect(controller.__viewStates).to.have.length(0);
         }
@@ -545,7 +638,7 @@ describe('NavigationController', () => {
     });
     it('returns null if the next view is no longer mounted', (done) => {
       controller.__pushView(<ViewB />, {
-        transition: transitionType.NONE,
+        transition: Transition.type.NONE,
         onComplete() {
           expect(controller.__renderNextView()).to.be.null;
           done();

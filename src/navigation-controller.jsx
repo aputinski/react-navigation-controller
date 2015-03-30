@@ -19,20 +19,10 @@ const {
   assign
 } = require('./util/object');
 
+const Transition = require('./util/transition');
+
 const classNames = require('classnames');
 const transformPrefix = getVendorPrefix('transform');
-
-const transitionType = {
-  NONE: 0,
-  PUSH_LEFT: 1,
-  PUSH_RIGHT: 2,
-  PUSH_UP: 3,
-  PUSH_DOWN: 4,
-  COVER_LEFT: 5,
-  COVER_RIGHT: 6,
-  COVER_UP: 7,
-  COVER_DOWN: 8
-};
 
 const optionTypes = {
   pushView: {
@@ -118,7 +108,7 @@ class NavigationController extends React.Component {
     this.__transformViews(0, 0, -100, 0);
     // Push the last view
     this.pushView(last(this.props.views), {
-      transition: transitionType.NONE
+      transition: Transition.type.NONE
     });
   }
 
@@ -139,8 +129,10 @@ class NavigationController extends React.Component {
     const prevView = this[`__view-wrapper-${prev}`];
     const nextView = this[`__view-wrapper-${next}`];
     requestAnimationFrame(() => {
-      prevView.style[transformPrefix] = `translate3d(${prevX}%,${prevY}%,0)`;
-      nextView.style[transformPrefix] = `translate3d(${nextX}%,${nextY}%,0)`;
+      prevView.style[transformPrefix] = `translate3d(${prevX}%,${prevY}%,0px)`;
+      prevView.style.zIndex = Transition.isReveal(this.state.transition) ? 1 : 0;
+      nextView.style[transformPrefix] = `translate3d(${nextX}%,${nextY}%,0px)`;
+      nextView.style.zIndex = Transition.isReveal(this.state.transition) ? 0 : 1;
     });
   }
 
@@ -151,26 +143,50 @@ class NavigationController extends React.Component {
    * @param {string} [transition] - The transition type
    * @return {array}
    */
-  __animateViews(value=0, transition=transitionType.NONE) {
+  __animateViews(value=0, transition=Transition.type.NONE) {
     let prevX = 0, prevY = 0;
     let nextX = 0, nextY = 0;
     switch (transition) {
-      case transitionType.NONE:
-      case transitionType.PUSH_LEFT:
+      case Transition.type.NONE:
+      case Transition.type.PUSH_LEFT:
         prevX = mapValueInRange(value, 0, 1, 0, -100);
         nextX = mapValueInRange(value, 0, 1, 100, 0);
         break;
-      case transitionType.PUSH_RIGHT:
+      case Transition.type.PUSH_RIGHT:
         prevX = mapValueInRange(value, 0, 1, 0, 100);
         nextX = mapValueInRange(value, 0, 1, -100, 0);
         break;
-      case transitionType.PUSH_UP:
+      case Transition.type.PUSH_UP:
         prevY = mapValueInRange(value, 0, 1, 0, -100);
         nextY = mapValueInRange(value, 0, 1, 100, 0);
         break;
-      case transitionType.PUSH_DOWN:
+      case Transition.type.PUSH_DOWN:
         prevY = mapValueInRange(value, 0, 1, 0, 100);
         nextY = mapValueInRange(value, 0, 1, -100, 0);
+        break;
+      case Transition.type.COVER_LEFT:
+        nextX = mapValueInRange(value, 0, 1, 100, 0);
+        break;
+      case Transition.type.COVER_RIGHT:
+        nextX = mapValueInRange(value, 0, 1, -100, 0);
+        break;
+      case Transition.type.COVER_UP:
+        nextY = mapValueInRange(value, 0, 1, 100, 0);
+        break;
+      case Transition.type.COVER_DOWN:
+        nextY = mapValueInRange(value, 0, 1, -100, 0);
+        break;
+      case Transition.type.REVEAL_LEFT:
+        prevX = mapValueInRange(value, 0, 1, 0, -100);
+        break;
+      case Transition.type.REVEAL_RIGHT:
+        prevX = mapValueInRange(value, 0, 1, 0, 100);
+        break;
+      case Transition.type.REVEAL_UP:
+        prevY = mapValueInRange(value, 0, 1, 0, -100);
+        break;
+      case Transition.type.REVEAL_DOWN:
+        prevY = mapValueInRange(value, 0, 1, 0, 100);
         break;
     }
     return [prevX,prevY,nextX,nextY];
@@ -223,7 +239,7 @@ class NavigationController extends React.Component {
     // Built-in transition
     if (typeof transition === 'number') {
       // Manually transition the views
-      if (transition === transitionType.NONE) {
+      if (transition === Transition.type.NONE) {
         this.__transformViews.apply(this,
           this.__animateViews(1, transition)
         );
@@ -274,7 +290,7 @@ class NavigationController extends React.Component {
   __pushView(view, options) {
     options = typeof options === 'object' ? options : {};
     const defaults = {
-      transition: transitionType.PUSH_LEFT
+      transition: Transition.type.PUSH_LEFT
     };
     options = assign({}, defaults, options, { view });
     checkOptions('pushView', options);
@@ -318,7 +334,7 @@ class NavigationController extends React.Component {
   __popView(options) {
     options = typeof options === 'object' ? options : {};
     const defaults = {
-      transition: transitionType.PUSH_RIGHT
+      transition: Transition.type.PUSH_RIGHT
     };
     options = assign({}, defaults, options);
     checkOptions('popView', options);
@@ -457,6 +473,6 @@ NavigationController.defaultProps = {
   transitionFriction: 6
 };
 
-NavigationController.transitionType = transitionType;
+NavigationController.Transition = Transition;
 
 module.exports = NavigationController;

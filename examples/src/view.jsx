@@ -1,5 +1,10 @@
 const React = require('react');
 
+const NavigationController = require('../../src/navigation-controller');
+const {
+  Transition
+} = NavigationController;
+
 const colors = [
   '#0074D9', '#7FDBFF',  '#39CCCC', '#2ECC40', '#FFDC00', '#FF851B', '#FF4136',
   '#F012BE', '#B10DC9' 
@@ -27,35 +32,53 @@ class View extends React.Component {
     });
   }
   onNext() {
-    this.props.navigationController.pushView(
-      <View index={this.props.index+1} />
-    );
+    const view = <View index={this.props.index+1} />;
+    this.props.navigationController.pushView(view, {
+      
+    });
   }
   onBack() {
-    this.props.navigationController.popView();
+    this.props.navigationController.popView({
+      transition: this.props.modal ? Transition.type.REVEAL_DOWN : Transition.type.PUSH_RIGHT
+    });
+  }
+  onModal() {
+    const view = <View index={this.props.index+1} modal={true} />;
+    this.props.navigationController.pushView(view, {
+      transition: Transition.type.COVER_UP
+    });
   }
   render() {
     return (
       <div
         className="ReactNavigationControllerViewContent"
         style={{background:this.state.color}}>
-        <div>
-          <div>
-            <h1>View {this.props.index}</h1>
-            <button onClick={this.incrementCounter.bind(this)}>
-              Increment Counter ({this.state.counter})
-            </button>
-            <button onClick={this.onNext.bind(this)}>Next</button>
-            {this.renderBackButton()}
-          </div>
-        </div>
+        <header>
+          {this.renderBackButton()}
+          {this.renderNextButton()}
+        </header>
+        <section>
+          <h3>View {this.props.index}</h3>
+          <button onClick={this.incrementCounter.bind(this)}>
+            Increment Counter ({this.state.counter})
+          </button>
+          <button onClick={this.onModal.bind(this)}>
+            Show Modal
+          </button>
+        </section>
       </div>
     );
   }
   renderBackButton() {
+    const text = this.props.modal ? 'Close' : 'Back';
     return this.props.index === 1
-      ? null
-      : <button onClick={this.onBack.bind(this)}>Back</button>;
+      ? <div />
+      : <button onClick={this.onBack.bind(this)}>{text}</button>;
+  }
+  renderNextButton() {
+    return this.props.modal === true
+      ? <div />
+      : <button onClick={this.onNext.bind(this)}>Next</button>;
   }
 }
 

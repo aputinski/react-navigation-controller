@@ -16,14 +16,14 @@ class App extends React.Component {
           views={[<View />]}
           preserveState={true}
           transitionTension={10}
-          transitionFriction={5} />
+          transitionFriction={6} />
         <h2>Multiple Views</h2>
         <p>Start with multiple views on the stack</p>
         <NavigationController
           views={[<View />, <View index={2} />, <View index={3} />]}
           preserveState={true}
           transitionTension={10}
-          transitionFriction={5} />
+          transitionFriction={6} />
       </main>
     );
   }

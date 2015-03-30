@@ -24,6 +24,18 @@ p {
   margin: 0 0 0.2em 0;
 }
 
+button {
+  display: block;
+  padding: 1em 1.5em;
+  background-color: transparent;
+  border: 2px solid white;
+  border-radius: 4px;
+  color: white;
+  font-size: 1em;
+  font-weight: 300;
+  outline: none;
+}
+
 .ReactNavigationController {
   position: relative;
   height: 480px;
@@ -39,37 +51,46 @@ p {
   right: 0;
   bottom: 0;
   left: 0;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+}
+
+.ReactNavigationControllerView {
   display: flex;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
 }
 
 .ReactNavigationControllerViewContent {
-  padding: 1em;
   color: white;
+  display: flex;
+  flex-direction: column;
 }
 
-.ReactNavigationControllerViewContent div {
-  margin: auto;
+/* HEADER */
+
+.ReactNavigationControllerViewContent header {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75em;
 }
 
-.ReactNavigationControllerViewContent h1 {
-  margin: auto;
-  text-align: center;
+.ReactNavigationControllerViewContent header button {
+
 }
 
-.ReactNavigationControllerViewContent button {
+/* CONTENT */
+
+.ReactNavigationControllerViewContent section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ReactNavigationControllerViewContent section h3 {
   display: block;
-  padding: 1em 1.5em;
+  margin: 0 auto;
+  font-size: 2rem;
+}
+
+.ReactNavigationControllerViewContent section button {
   margin: 1em auto;
-  background-color: transparent;
-  border: 2px solid white;
-  border-radius: 4px;
-  color: white;
-  font-size: 1em;
-  font-weight: 700;
-  outline: none;
 }
