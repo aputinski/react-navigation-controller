@@ -4,6 +4,8 @@ const {
   renderIntoDocument
 } = React.addons.TestUtils;
 
+const rebound = require('rebound');
+
 const NavigationController = require('../src/navigation-controller');
 const {
   transitionType
@@ -15,12 +17,9 @@ const {
 
 const transformPrefix = getVendorPrefix('transform');
 
-const {
-  ViewA,
-  ViewB
-} = require('../examples/src/views');
-
-const rebound = require('rebound');
+const View = require('../examples/src/view');
+class ViewA extends View { }
+class ViewB extends View { }
 
 describe('NavigationController', () => {
   const views = [

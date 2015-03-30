@@ -64,10 +64,11 @@ p {
   display: block;
   padding: 1em 2em;
   margin: 1em auto;
-  background: #7FDBFF;
+  background-color: transparent;
   border: 2px solid white;
   border-radius: 4px;
-  color: #001f3f;
+  color: white;
   font-size: 1em;
+  font-weight: 700;
   outline: none;
 }
