@@ -103,13 +103,13 @@ NavigationController.transitionType = {
 };
 ```
 
-A function can be used perform a custom transition:
+A function can be used to perform custom transitions:
 
 ```jsx
 navigationController.pushView(<MyView />, {
   transition(prevElement, nextElement, done) {
-    // Perform some sort of animation on the views
-    prevElement.style.transform = 'translate3d(100, 0, 0)';
+    // Do some sort of animation on the views
+    prevElement.style.transform = 'translate3d(100%, 0, 0)';
     nextElement.style.transform = 'translate3d(0, 0, 0)';
     // Tell the navigationController when the animation is complete
     setTimeout(done, 500);
