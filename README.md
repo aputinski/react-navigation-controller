@@ -8,6 +8,10 @@ A React view mananger similar to [UINavigationController][ios-controller]
 npm install react-navigation-controller
 ```
 
+## Demo
+
+[http://aputinski.github.io/react-navigation-controller/examples/]()
+
 ## Usage
 
 ```jsx
