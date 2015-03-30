@@ -326,6 +326,22 @@ describe('NavigationController', () => {
         done();
       });
     });
+    it('preserves the state', (done) => {
+      controller = renderIntoDocument(
+        <NavigationController views={views} preserveState={true} />
+      );
+      requestAnimationFrame(() => {
+        controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
+          foo: 'bar'
+        });
+        controller.pushView(<ViewB />, () => {}, 'none');
+        requestAnimationFrame(() => {
+          expect(controller.__viewStates).to.have.length(1);
+          expect(controller.__viewStates[0]).to.have.property('foo');
+          done();
+        });
+      })
+    });
   });
   describe('#__popView', () => {
     beforeEach(done => {
@@ -405,6 +421,37 @@ describe('NavigationController', () => {
         expect(true).to.be.true;
         done();
       });
+    });
+    it('does not rehydrate the state', (done) => {
+      requestAnimationFrame(() => {
+        controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
+          foo: 'bar'
+        });
+        controller.pushView(<ViewB />, () => {
+          controller.popView(() => {
+            expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
+              .not.to.have.property('foo');
+            done();
+          }, 'none');
+        }, 'none');
+      })
+    });
+    it('rehydrates the state', (done) => {
+      controller = renderIntoDocument(
+        <NavigationController views={views} preserveState={true} />
+      );
+      requestAnimationFrame(() => {
+        controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
+          foo: 'bar'
+        });
+        controller.pushView(<ViewB />, () => {
+          controller.popView(() => {
+            expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state).
+              to.have.property('foo');
+            done();
+          }, 'none');
+        }, 'none');
+      })
     });
   });
   describe('#__renderPrevView', () => {

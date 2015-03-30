@@ -63,9 +63,10 @@ class NavigationController extends React.Component {
 
   constructor(props) {
     super(props);
-    const {views} = this.props;
+    const {views,preserveState} = this.props;
     this.state = {
       views: dropRight(views),
+      preserveState,
       mountedViews: []
     };
     // Bind methats that were passed into createSpring()
@@ -265,7 +266,7 @@ class NavigationController extends React.Component {
     }, () => {
       // The view about to be hidden
       const prevView = this.refs[`view-0`];
-      if (prevView) {
+      if (prevView && this.state.preserveState) {
         // Save the state before it gets unmounted
         this.__viewStates.push(prevView.state);
       }
@@ -304,7 +305,7 @@ class NavigationController extends React.Component {
     }, () => {
       // The view about to be shown
       const nextView = this.refs[`view-1`];
-      if (nextView) {
+      if (nextView && this.state.preserveState) {
         const state = this.__viewStates.pop();
         // Rehydrate the state
         if (state) {
@@ -371,7 +372,12 @@ class NavigationController extends React.Component {
 NavigationController.propTypes = {
   views: React.PropTypes.arrayOf(
     React.PropTypes.element
-  ).isRequired
+  ).isRequired,
+  preserveState: React.PropTypes.bool
+};
+
+NavigationController.defaultProps = {
+  preserveState: false
 };
 
 module.exports = NavigationController;

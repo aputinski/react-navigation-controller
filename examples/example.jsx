@@ -22,9 +22,11 @@ class App extends React.Component {
     return (
       <main>
         <NavigationController
-          views={[a]} />
+          views={[a]}
+          preserveState={true} />
         <NavigationController
-          views={[a,b]} />
+          views={[a,b]}
+          preserveState={true} />
       </main>
     );
   }
