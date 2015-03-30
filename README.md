@@ -1,6 +1,6 @@
 # React NavigationController
 
-A React view mananger similar to [UINavigationController][ios-controller]
+A React view manager similar to [UINavigationController][ios-controller]
 
 ## Instalation
 
