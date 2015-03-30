@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "webpack-dev-server --content-base examples/ --port 3000 --hot --inline",
+    "start": "webpack-dev-server --content-base examples/ --port 3000 --hot",
     "test": "./node_modules/karma/bin/karma start",
     "dist/example": "webpack --dist"
   },
