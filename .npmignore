@@ -1,5 +1,7 @@
+/examples
 /node_modules
 /spec
 /src
-karma.config.js
+karma.conf.js
 webpack.config.js
+npm-debug.log
