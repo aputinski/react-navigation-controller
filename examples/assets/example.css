@@ -10,9 +10,9 @@ main {
   margin: 0 auto;
 }
 
-@media (max-width: 520px) {
-  .main {
-    width: 100%
+@media screen and (max-width: 360px) {
+  main {
+    width: auto;
   }
 }
 
@@ -48,6 +48,7 @@ p {
 }
 
 .ReactNavigationControllerViewContent {
+  padding: 1em;
   color: white;
 }
 
@@ -62,7 +63,7 @@ p {
 
 .ReactNavigationControllerViewContent button {
   display: block;
-  padding: 1em 2em;
+  padding: 1em 1.5em;
   margin: 1em auto;
   background-color: transparent;
   border: 2px solid white;
