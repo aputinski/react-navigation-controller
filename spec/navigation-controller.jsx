@@ -7,7 +7,7 @@ const {
 const NavigationController = require('../src/navigation-controller');
 const {
   getVendorPrefix
-} = require('../src/util');
+} = require('../src/util/dom');
 
 const transformPrefix = getVendorPrefix('transform');
 
@@ -265,12 +265,12 @@ describe('NavigationController', () => {
     });
     it('throws an error if an invalid callback is passed', () => {
       expect(() => {
-        controller.__pushView(<ViewA />, 'true');
-      }).to.throw(/transitionDone/);
+        controller.__pushView(<ViewA />, { onComplete: true});
+      }).to.throw(/onComplete/);
     });
     it('throws an error if an invalid transition is passed', () => {
       expect(() => {
-        controller.__pushView(<ViewA />, () => {}, true);
+        controller.__pushView(<ViewA />, { transition: true });
       }).to.throw(/transition/);
     });
     it('returns early if the controller is already transitioning', () => {
@@ -285,24 +285,34 @@ describe('NavigationController', () => {
       expect(spy.calledWith('block')).to.be.true;
     });
     it('appends the view to state.views', (done) => {
-      controller.__pushView(<ViewB />, () => {
-        expect(controller.state.views[1].type).to.equal(ViewB);
-        done();
-      }, 'none');
+      controller.__pushView(<ViewB />, {
+        transition: 'none',
+        onComplete: () => {
+          expect(controller.state.views[1].type).to.equal(ViewB);
+          done();
+        }
+      });
     });
     it('sets state.transition', (done) => {
-      controller.__pushView(<ViewB />, () => {
-        done();
-      }, 'none');
+      controller.__pushView(<ViewB />, {
+        transition: 'none',
+        onComplete: () => {
+          done();
+        }
+      });
       requestAnimationFrame(() => {
         expect(controller.state.transition).to.equal('none');
       });
     });
     it('sets state.mountedViews', (done) => {
       const [prev,next] = controller.__viewIndexes;
-      controller.__pushView(<ViewB />, () => {
-        done();
-      }, 'none');
+      controller.__pushView(<ViewB />, {
+        transition: 'none',
+        onComplete: () => {
+          expect(controller.state.views[1].type).to.equal(ViewB);
+          done();
+        }
+      });
       requestAnimationFrame(() => {
         expect(controller.state.mountedViews[prev].type).to.equal(ViewA);
         expect(controller.state.mountedViews[next].type).to.equal(ViewB);
@@ -310,20 +320,23 @@ describe('NavigationController', () => {
     });
     it('transitions the views', (done) => {
       const spy = sinon.spy(controller, '__transitionViews');
-      controller.__pushView(<ViewB />, () => {}, 'none');
+      controller.__pushView(<ViewB />, { transition: 'none' });
       requestAnimationFrame(() => {
         expect(spy.calledOnce).to.be.true;
         done();
       });
     });
     it('sets __isTransitioning=true', () => {
-      controller.__pushView(<ViewB />, () => {}, 'none');
+      controller.__pushView(<ViewB />, { transition: 'none' });
       expect(controller.__isTransitioning).to.be.true;
     });
     it('calls the transitionDone callback', (done) => {
-      controller.__pushView(<ViewB />, () => {
-        expect(true).to.be.true;
-        done();
+      controller.__pushView(<ViewB />, {
+        transition: 'none',
+        onComplete: () => {
+          expect(true).to.be.true;
+          done();
+        }
       });
     });
     it('preserves the state', (done) => {
@@ -334,7 +347,7 @@ describe('NavigationController', () => {
         controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
           foo: 'bar'
         });
-        controller.pushView(<ViewB />, () => {}, 'none');
+        controller.__pushView(<ViewB />, { transition: 'none' });
         requestAnimationFrame(() => {
           expect(controller.__viewStates).to.have.length(1);
           expect(controller.__viewStates[0]).to.have.property('foo');
@@ -360,12 +373,12 @@ describe('NavigationController', () => {
     });
     it('throws an error if an invalid callback is passed', () => {
       expect(() => {
-        controller.__popView('true');
-      }).to.throw(/transitionDone/);
+        controller.__popView({ onComplete: true });
+      }).to.throw(/onComplete/);
     });
     it('throws an error if an invalid transition is passed', () => {
       expect(() => {
-        controller.__popView(() => {}, true);
+        controller.__popView({ transition: true });
       }).to.throw(/transition/);
     });
     it('returns early if the controller is already transitioning', () => {
@@ -380,25 +393,34 @@ describe('NavigationController', () => {
       expect(spy.calledWith('block')).to.be.true;
     });
     it('removes the last view from state.views', (done) => {
-      controller.__popView(() => {
-        expect(controller.state.views).to.have.length(1);
-        expect(controller.state.views[0].type).to.equal(ViewA);
-        done();
-      }, 'none');
+      controller.__popView({
+        onComplete: () => {
+          expect(controller.state.views).to.have.length(1);
+          expect(controller.state.views[0].type).to.equal(ViewA);
+          done();
+        },
+        transition: 'none'
+      });
     });
     it('sets state.transition', (done) => {
-      controller.__popView(() => {
-        done();
-      }, 'none');
+      controller.__popView({
+        transition: 'none',
+        onComplete: () => {
+          done();
+        }
+      });
       requestAnimationFrame(() => {
         expect(controller.state.transition).to.equal('none');
       });
     });
     it('sets state.mountedViews', (done) => {
       const [prev,next] = controller.__viewIndexes;
-      controller.__popView(() => {
-        done();
-      }, 'none');
+      controller.__popView({
+        transition: 'none',
+        onComplete: () => {
+          done();
+        }
+      });
       requestAnimationFrame(() => {
         expect(controller.state.mountedViews[prev].type).to.equal(ViewB);
         expect(controller.state.mountedViews[next].type).to.equal(ViewA);
@@ -406,20 +428,22 @@ describe('NavigationController', () => {
     });
     it('transitions the views', (done) => {
       const spy = sinon.spy(controller, '__transitionViews');
-      controller.__popView(() => {}, 'none');
+      controller.__popView({ transition: 'none' });
       requestAnimationFrame(() => {
         expect(spy.calledOnce).to.be.true;
         done();
       });
     });
     it('sets __isTransitioning=true', () => {
-      controller.__popView(() => {}, 'none');
+      controller.__popView({ transition: 'none' });
       expect(controller.__isTransitioning).to.be.true;
     });
-    it('calls the transitionDone callback', (done) => {
-      controller.__popView(() => {
-        expect(true).to.be.true;
-        done();
+    it('calls the onComplete callback', (done) => {
+      controller.__popView({
+        onComplete: () => {
+          expect(true).to.be.true;
+          done();
+        }
       });
     });
     it('does not rehydrate the state', (done) => {
@@ -427,14 +451,20 @@ describe('NavigationController', () => {
         controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
           foo: 'bar'
         });
-        controller.pushView(<ViewB />, () => {
-          controller.popView(() => {
-            expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
-              .not.to.have.property('foo');
-            done();
-          }, 'none');
-        }, 'none');
-      })
+        controller.pushView(<ViewB />, {
+          transition: 'none',
+          onComplete: () => {
+            controller.popView({
+              transition: 'none',
+              onComplete: () => {
+                expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
+                  .not.to.have.property('foo');
+                done();
+              }
+            });
+          }
+        });
+      });
     });
     it('rehydrates the state', (done) => {
       controller = renderIntoDocument(
@@ -444,14 +474,20 @@ describe('NavigationController', () => {
         controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
           foo: 'bar'
         });
-        controller.pushView(<ViewB />, () => {
-          controller.popView(() => {
-            expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state).
-              to.have.property('foo');
-            done();
-          }, 'none');
-        }, 'none');
-      })
+        controller.pushView(<ViewB />, {
+          onComplete: () => {
+            transition: 'none',
+            controller.popView({
+              transition: 'none',
+              onComplete: () => {
+                expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
+                  .to.have.property('foo');
+                done();
+              }
+            });
+          }
+        });
+      });
     });
   });
   describe('#__renderPrevView', () => {
@@ -482,10 +518,13 @@ describe('NavigationController', () => {
       });
     });
     it('returns null if the next view is no longer mounted', (done) => {
-      controller.__pushView(<ViewB />, () => {
-        expect(controller.__renderNextView()).to.be.null;
-        done();
-      }, 'none');
+      controller.__pushView(<ViewB />, {
+        transition: 'none',
+        onComplete: () => {
+          expect(controller.__renderNextView()).to.be.null;
+          done();
+        }
+      });
     });
     it('returns a clone if the next view is mounted', (done) => {
       controller.__pushView(<ViewB />);
@@ -499,4 +538,4 @@ describe('NavigationController', () => {
       });
     });
   });
-})
+});

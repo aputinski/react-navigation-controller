@@ -1,24 +1,10 @@
 const {
-  getVendorPrefix,
   dropRight,
   last,
-  takeRight,
-  capitalize,
-  assign
-} = require('../src/util');
+  takeRight
+} = require('../../src/util/array');
 
 describe('Util', () => {
-  describe('Misc', () => {
-    describe('#getVendorPrefix', () => {
-      let el;
-      it('gets the correct prefix', () => {
-        el = {style:{'transform':true,'webkitTransform':true}};
-        expect(getVendorPrefix('transform', el)).to.equal('transform');
-        el = {style:{'webkitTransform':true}};
-        expect(getVendorPrefix('transform', el)).to.equal('webkitTransform');
-      });
-    });
-  });
   describe('Array', () => {
     describe('#dropRight', () => {
       it('drops the last element from the array', () => {
@@ -49,25 +35,6 @@ describe('Util', () => {
         expect(a[0]).to.equal(8);
         expect(a[1]).to.equal(9);
         expect(a[2]).to.equal(10);
-      });
-    });
-  });
-  describe('String', () => {
-    describe('#capitalize', () => {
-      it('capitalizes the first character of a word', () => {
-        expect(capitalize('hello')).to.equal('Hello');
-        expect(capitalize('Hello')).to.equal('Hello');
-        expect(capitalize('hello world')).to.equal('Hello world');
-      });
-    });
-  });
-  describe('Object', () => {
-    describe('#assign', () => {
-      it('merges the sources into the target', () => {
-        expect(assign({foo:'bar'},{foo:'baz'})).to.have.property('foo', 'baz');
-        const a = assign({foo:'bar'},{foo:'baz',hello:'world'})
-        expect(a).to.have.property('foo', 'baz');
-        expect(a).to.have.property('hello', 'world');
       });
     });
   });

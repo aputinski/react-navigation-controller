@@ -6,56 +6,53 @@ const {
 } = rebound.MathUtil;
 
 const {
+  getVendorPrefix
+} = require('./util/dom');
+
+const {
   dropRight,
   last,
-  takeRight,
-  getVendorPrefix
-} = require('./util');
+  takeRight
+} = require('./util/array');
+
+const {
+  assign
+} = require('./util/object');
 
 const classNames = require('classnames');
 const transformPrefix = getVendorPrefix('transform');
 
-const argTypes = {
-  pushView: [{
-    name: 'view',
-    validate: React.PropTypes.element.isRequired
-  },{
-    name: 'transitionDone',
-    validate: React.PropTypes.func
-  },{
-    name: 'transition',
-    validate: React.PropTypes.oneOfType([
+const optionTypes = {
+  pushView: {
+    view: React.PropTypes.element.isRequired,
+    transition: React.PropTypes.oneOfType([
       React.PropTypes.func,
       React.PropTypes.string
-    ])
-  }],
-  popView: [{
-    name: 'transitionDone',
-    validate: React.PropTypes.func
-  },{
-    name: 'transition',
-    validate: React.PropTypes.oneOfType([
+    ]),
+    onComplete: React.PropTypes.func
+  },
+  popView: {
+    transition: React.PropTypes.oneOfType([
       React.PropTypes.func,
       React.PropTypes.string
-    ])
-  }]
+    ]),
+    onComplete: React.PropTypes.func
+  }
 };
 
 /**
- * Validate the arguments passed into a method
+ * Validate the options passed into a method
  *
  * @param {string} method - The name of the method to validate
- * @param {arguments} args - The arguments object that were passed to "method"
+ * @param {object} options - The options that were passed to "method"
  */
-function checkArguments(method, args) {
-  const argType = argTypes[method];
-  const argMap = {};
-  argType.forEach((arg, index) => {
-    argMap[arg.name] = args[index];
-  });
-  argType.forEach((arg, index) => {
-    const e = arg.validate(argMap, arg.name, method, 'prop');
-    if (e) throw e;
+function checkOptions(method, options) {
+  const optionType = optionTypes[method];
+  Object.keys(options).forEach(key => {
+    if (optionType[key]) {
+      const e = optionType[key](options, key, method, 'prop');
+      if (e) throw e;
+    }
   });
 }
 
@@ -94,7 +91,7 @@ class NavigationController extends React.Component {
     // Position the wrappers
     this.__transformViews(0, 0, -100, 0);
     // Push the last view
-    this.pushView(last(this.props.views), () => {}, 'none');
+    this.pushView(last(this.props.views), { transition: 'none' });
   }
 
   componentWillUnmount() {
@@ -186,13 +183,13 @@ class NavigationController extends React.Component {
    * Transtion the view wrappers manually, using a built-in animation, or custom animation
    *
    * @param {string} transition
-   * @param {function} [done] - Called once the transition is complete
+   * @param {function} [onComplete] - Called once the transition is complete
    */
-  __transitionViews(transition, done) {
+  __transitionViews(transition, onComplete) {
     this.__transitionViewsComplete = () => {
       delete this.__transitionViewsComplete;
-      if (typeof done === 'function') {
-        done();
+      if (typeof onComplete === 'function') {
+        onComplete();
       }
     };
     // Built-in transition
@@ -242,12 +239,19 @@ class NavigationController extends React.Component {
    * Push a new view onto the stack
    *
    * @param {ReactElement} view - The view to push onto the stack
-   * @param {function} done - Called once the transition is complete
-   * @param {string|function} [transition] - The transtion type or custom transition
+   * @param {object} [options]
+   * @param {function} options.onComplete - Called once the transition is complete
+   * @param {string|function} [options.transition] - The transtion type or custom transition
    */
-  __pushView(view, done, transition='slide-left') {
-    checkArguments('pushView', arguments);
+  __pushView(view, options) {
+    options = typeof options === 'object' ? options : {};
+    const defaults = {
+      transition: 'slide-left'
+    };
+    options = assign({}, defaults, options, { view });
+    checkOptions('pushView', options);
     if (this.__isTransitioning) return;
+    const {transition,onComplete} = options;
     const [prev,next] = this.__viewIndexes;
     let views = this.state.views.slice();
     // Alternate mounted views order
@@ -271,7 +275,7 @@ class NavigationController extends React.Component {
         this.__viewStates.push(prevView.state);
       }
       // Transition
-      this.__transitionViews(transition, done);
+      this.__transitionViews(transition, onComplete);
     });
     this.__isTransitioning = true;
   }
@@ -279,15 +283,22 @@ class NavigationController extends React.Component {
   /**
    * Pop the last view off the stack
    *
-   * @param {function} done - Called once the transition is complete
-   * @param {string|function} [transition] - The transtion type or custom transition
+   * @param {object} [options]
+   * @param {function} [options.onComplete] - Called once the transition is complete
+   * @param {string|function} [options.transition] - The transtion type or custom transition
    */
-  __popView(done, transition='slide-right') {
-    checkArguments('popView', arguments);
+  __popView(options) {
+    options = typeof options === 'object' ? options : {};
+    const defaults = {
+      transition: 'slide-right'
+    };
+    options = assign({}, defaults, options);
+    checkOptions('popView', options);
     if (this.state.views.length === 1) {
       throw new Error('popView() can only be called with two or more views in the stack')
     };
     if (this.__isTransitioning) return;
+    const {transition,onComplete} = options;
     const [prev,next] = this.__viewIndexes;
     const views = dropRight(this.state.views);
     // Alternate mounted views order
@@ -313,7 +324,7 @@ class NavigationController extends React.Component {
         }
       }
       // Transition
-      this.__transitionViews(transition, done);
+      this.__transitionViews(transition, onComplete);
     });
     this.__isTransitioning = true;
   }
@@ -324,6 +335,10 @@ class NavigationController extends React.Component {
 
   popView() {
     this.__popView.apply(this, arguments);
+  }
+
+  setViews() {
+    this.setViews.apply(this, arguments);
   }
 
   __renderPrevView() {
