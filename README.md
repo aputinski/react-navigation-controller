@@ -160,4 +160,13 @@ No default styles are provided, but classes are added for custom styling:
 
 Check out the examples for some basic CSS.
 
+## Dev
+
+```bash
+npm install
+npm start
+```
+
+Visit [http://localhost:3000/index.dev.html]()
+
 [ios-controller]: https://developer.apple.com/library/ios/documentation/UIKit/Reference/UINavigationController_Class/

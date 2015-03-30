@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "start": "webpack-dev-server --content-base examples/ --port 3000 --hot",
+    "start": "webpack-dev-server --content-base examples/ --port 3000 --hot --inline",
     "test": "./node_modules/karma/bin/karma start",
-    "example": "webpack"
+    "dist/example": "webpack --dist"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "karma-mocha": "^0.1.10",
     "karma-spec-reporter": "0.0.18",
     "karma-webpack": "^1.5.0",
+    "minimist": "^1.1.1",
     "mocha": "^2.2.1",
     "react": "0.13.1",
     "sinon": "^1.14.1",

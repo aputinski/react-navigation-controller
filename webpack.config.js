@@ -1,10 +1,17 @@
+var argv = require('minimist')(process.argv.slice(2));
+
+var entry = {
+  example: [
+    './examples/src/example.jsx',
+  ]
+};
+
+if (argv.dist !== true) {
+  entry.example.push('webpack/hot/dev-server');
+}
+
 module.exports = {
-  entry: {
-    example: [
-      'webpack/hot/dev-server',
-      './examples/src/example.jsx',
-    ]
-  },
+  entry: entry,
   output: {
     path: './examples/assets',
     filename: '[name].js',
