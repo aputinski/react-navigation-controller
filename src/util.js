@@ -4,16 +4,15 @@
  * @param {array} 
  * @returns {string}
  */
-exports.getVendorPrefix = function(property) {
-  const el = document.createElement('div');
-  const prefixes = ['', 'ms', 'Moz', 'Webkit'];
+function getVendorPrefix(property, el) {
+  el = el || document.createElement('div');
+  const prefixes = ['', 'ms', 'Moz', 'webkit'];
   let result;
   prefixes.forEach(prefix => {
     if (result) return;
-    let prop = prefix ? _.capitalize(property) : property;
-    let p = `${prefix}${prop}`;
-    if (typeof el.style[p] !== 'undefined') {
-      result = p;
+    let prop = prefix ? prefix + capitalize(property) : property;
+    if (typeof el.style[prop] !== 'undefined') {
+      result = prop;
     }
   });
   return result;
@@ -26,7 +25,7 @@ exports.getVendorPrefix = function(property) {
  * @param {number} [n=1] The number of elements to drop.
  * @returns {array} Returns the slice of `array`.
  */
-exports.dropRight = function(array, n=1) {
+function dropRight(array, n=1) {
   const length = array ? array.length : 0;
   if (!length) {
     return [];
@@ -42,7 +41,7 @@ exports.dropRight = function(array, n=1) {
  * @param {number} [n=1] The number of elements to drop.
  * @returns {*} Returns the last element of `array`.
  */
-exports.last = function(array) {
+function last(array) {
   const length = array ? array.length : 0;
   return length ? array[length - 1] : undefined;
 }
@@ -54,7 +53,7 @@ exports.last = function(array) {
  * @param {number} [n=1] The number of elements to take.
  * @returns {array} Returns the slice of `array`.
  */
-exports.takeRight = function(array, n=1) {
+function takeRight(array, n=1) {
   var length = array ? array.length : 0;
   if (!length) {
     return [];
@@ -69,6 +68,18 @@ exports.takeRight = function(array, n=1) {
  * @param {string} [string=''] The string to capitalize.
  * @returns {string} Returns the capitalized string.
  */
-exports.capitalize = function(string) {
+function capitalize(string) {
   return string && (string.charAt(0).toUpperCase() + string.slice(1));
 }
+
+module.exports = {
+
+  getVendorPrefix,
+
+  dropRight,
+  last,
+  takeRight,
+
+  capitalize
+
+};
