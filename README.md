@@ -3,7 +3,7 @@
 [![Build Status][travis-image]][travis-url]
 [![NPM version][npm-image]][npm-url]
 
-A React view manager similar to [UINavigationController][ios-controller]
+React view manager similar to [UINavigationController][ios-controller]
 
 ## Instalation
 
@@ -127,6 +127,14 @@ navigationController.pushView(<MyView />, {
   }
 });
 ```
+
+##### `options.transitonTension` `{number}` `default=10`
+
+Specify the spring tension to be used for built-in animations
+
+##### `options.transitonFriction` `{number}` `default=6`
+
+Specify the spring friction to be used for built-in animations
 
 ##### `options.onComplete` `{function}`
 

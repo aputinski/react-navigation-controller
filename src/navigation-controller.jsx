@@ -2,6 +2,11 @@ const React = require('react');
 
 const rebound = require('rebound');
 const {
+  SpringSystem,
+  SpringConfig,
+  OrigamiValueConverter
+} = rebound;
+const {
   mapValueInRange
 } = rebound.MathUtil;
 
@@ -89,7 +94,7 @@ class NavigationController extends React.Component {
     this.__isTransitioning = false;
     this.__viewStates = [];
     this.__viewIndexes = [0,1];
-    this.__springSystem = new rebound.SpringSystem();
+    this.__springSystem = new SpringSystem();
     this.__spring = this.__springSystem.createSpring(
       this.props.transitionTension,
       this.props.transitionFriction
@@ -229,7 +234,20 @@ class NavigationController extends React.Component {
    * @param {string} transition
    * @param {function} [onComplete] - Called once the transition is complete
    */
-  __transitionViews(transition, onComplete) {
+  __transitionViews(options) {
+    options = typeof options === 'object' ? options : {};
+    const defaults = {
+      transitionTension: this.props.transitionTension,
+      transitionFriction: this.props.transitionFriction
+    };
+    options = assign({}, defaults, options);
+    const {
+      transition,
+      transitionTension,
+      transitionFriction,
+      onComplete
+    } = options;
+    // Create a function that will be called once the
     this.__transitionViewsComplete = () => {
       delete this.__transitionViewsComplete;
       if (typeof onComplete === 'function') {
@@ -250,6 +268,12 @@ class NavigationController extends React.Component {
       }
       // Otherwise use the springs
       else {
+        this.__spring.setSpringConfig(
+          new SpringConfig(
+            OrigamiValueConverter.tensionFromOrigamiValue(transitionTension),
+            OrigamiValueConverter.frictionFromOrigamiValue(transitionFriction)
+          )
+        );
         this.__spring.setEndValue(1);
       }
     }
@@ -295,7 +319,7 @@ class NavigationController extends React.Component {
     options = assign({}, defaults, options, { view });
     checkOptions('pushView', options);
     if (this.__isTransitioning) return;
-    const {transition,onComplete} = options;
+    const {transition} = options;
     const [prev,next] = this.__viewIndexes;
     let views = this.state.views.slice();
     // Alternate mounted views order
@@ -319,7 +343,7 @@ class NavigationController extends React.Component {
         this.__viewStates.push(prevView.state);
       }
       // Transition
-      this.__transitionViews(transition, onComplete);
+      this.__transitionViews(options);
     });
     this.__isTransitioning = true;
   }
@@ -342,7 +366,7 @@ class NavigationController extends React.Component {
       throw new Error('popView() can only be called with two or more views in the stack')
     };
     if (this.__isTransitioning) return;
-    const {transition,onComplete} = options;
+    const {transition} = options;
     const [prev,next] = this.__viewIndexes;
     const views = dropRight(this.state.views);
     // Alternate mounted views order
@@ -368,7 +392,7 @@ class NavigationController extends React.Component {
         }
       }
       // Transition
-      this.__transitionViews(transition, onComplete);
+      this.__transitionViews(options);
     });
     this.__isTransitioning = true;
   }

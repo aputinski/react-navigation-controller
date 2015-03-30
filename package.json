@@ -1,7 +1,7 @@
 {
   "name": "react-navigation-controller",
-  "version": "1.0.1",
-  "description": "A React view manager similar to UINavigationController",
+  "version": "1.0.2",
+  "description": "React view manager similar to UINavigationController",
   "keywords": [
     "react",
     "react-component"
