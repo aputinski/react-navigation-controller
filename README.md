@@ -10,7 +10,7 @@ npm install react-navigation-controller
 
 ## Demo
 
-[http://aputinski.github.io/react-navigation-controller/examples/]()
+<http://aputinski.github.io/react-navigation-controller/examples/>
 
 ## Usage
 
