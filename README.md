@@ -89,9 +89,19 @@ Any valid React element (`React.PropTypes.element`)
 
 Addtional options
 
-##### `options.transiton` `{string|function}` `default='slide-left'`
+##### `options.transiton` `{number|function}` `default='slide-left'`
 
-Specify the type of transition: `slide-left` `slide-right` `slide-up` `slide-down`
+Specify the type of transition:
+
+```js
+NavigationController.transitionType = {
+  NONE: 0,
+  PUSH_LEFT: 1,
+  PUSH_RIGHT: 2,
+  PUSH_UP: 3,
+  PUSH_DOWN: 4
+};
+```
 
 A function can be used perform a custom transition:
 

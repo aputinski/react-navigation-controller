@@ -22,19 +22,31 @@ const {
 const classNames = require('classnames');
 const transformPrefix = getVendorPrefix('transform');
 
+const transitionType = {
+  NONE: 0,
+  PUSH_LEFT: 1,
+  PUSH_RIGHT: 2,
+  PUSH_UP: 3,
+  PUSH_DOWN: 4,
+  COVER_LEFT: 5,
+  COVER_RIGHT: 6,
+  COVER_UP: 7,
+  COVER_DOWN: 8
+};
+
 const optionTypes = {
   pushView: {
     view: React.PropTypes.element.isRequired,
     transition: React.PropTypes.oneOfType([
       React.PropTypes.func,
-      React.PropTypes.string
+      React.PropTypes.number
     ]),
     onComplete: React.PropTypes.func
   },
   popView: {
     transition: React.PropTypes.oneOfType([
       React.PropTypes.func,
-      React.PropTypes.string
+      React.PropTypes.number
     ]),
     onComplete: React.PropTypes.func
   },
@@ -42,7 +54,12 @@ const optionTypes = {
     views: React.PropTypes.arrayOf(
       React.PropTypes.element
     ).isRequired,
-    preserveState: React.PropTypes.bool
+    preserveState: React.PropTypes.bool,
+    transition: React.PropTypes.oneOfType([
+      React.PropTypes.func,
+      React.PropTypes.number
+    ]),
+    onComplete: React.PropTypes.func
   }
 };
 
@@ -100,7 +117,9 @@ class NavigationController extends React.Component {
     // Position the wrappers
     this.__transformViews(0, 0, -100, 0);
     // Push the last view
-    this.pushView(last(this.props.views), { transition: 'none' });
+    this.pushView(last(this.props.views), {
+      transition: transitionType.NONE
+    });
   }
 
   componentWillUnmount() {
@@ -132,24 +151,24 @@ class NavigationController extends React.Component {
    * @param {string} [transition] - The transition type
    * @return {array}
    */
-  __animateViews(value=0, transition='none') {
+  __animateViews(value=0, transition=transitionType.NONE) {
     let prevX = 0, prevY = 0;
     let nextX = 0, nextY = 0;
     switch (transition) {
-      case 'none':
-      case 'slide-left':
+      case transitionType.NONE:
+      case transitionType.PUSH_LEFT:
         prevX = mapValueInRange(value, 0, 1, 0, -100);
         nextX = mapValueInRange(value, 0, 1, 100, 0);
         break;
-      case 'slide-right':
+      case transitionType.PUSH_RIGHT:
         prevX = mapValueInRange(value, 0, 1, 0, 100);
         nextX = mapValueInRange(value, 0, 1, -100, 0);
         break;
-      case 'slide-up':
+      case transitionType.PUSH_UP:
         prevY = mapValueInRange(value, 0, 1, 0, -100);
         nextY = mapValueInRange(value, 0, 1, 100, 0);
         break;
-      case 'slide-down':
+      case transitionType.PUSH_DOWN:
         prevY = mapValueInRange(value, 0, 1, 0, 100);
         nextY = mapValueInRange(value, 0, 1, -100, 0);
         break;
@@ -202,9 +221,9 @@ class NavigationController extends React.Component {
       }
     };
     // Built-in transition
-    if (typeof transition === 'string') {
+    if (typeof transition === 'number') {
       // Manually transition the views
-      if (transition === 'none') {
+      if (transition === transitionType.NONE) {
         this.__transformViews.apply(this,
           this.__animateViews(1, transition)
         );
@@ -250,12 +269,12 @@ class NavigationController extends React.Component {
    * @param {ReactElement} view - The view to push onto the stack
    * @param {object} [options]
    * @param {function} options.onComplete - Called once the transition is complete
-   * @param {string|function} [options.transition] - The transtion type or custom transition
+   * @param {number|function} [options.transition] - The transition type or custom transition
    */
   __pushView(view, options) {
     options = typeof options === 'object' ? options : {};
     const defaults = {
-      transition: 'slide-left'
+      transition: transitionType.PUSH_LEFT
     };
     options = assign({}, defaults, options, { view });
     checkOptions('pushView', options);
@@ -294,12 +313,12 @@ class NavigationController extends React.Component {
    *
    * @param {object} [options]
    * @param {function} [options.onComplete] - Called once the transition is complete
-   * @param {string|function} [options.transition] - The transtion type or custom transition
+   * @param {number|function} [options.transition] - The transition type or custom transition
    */
   __popView(options) {
     options = typeof options === 'object' ? options : {};
     const defaults = {
-      transition: 'slide-right'
+      transition: transitionType.PUSH_RIGHT
     };
     options = assign({}, defaults, options);
     checkOptions('popView', options);
@@ -345,7 +364,7 @@ class NavigationController extends React.Component {
    * @param {array} views
    * @param {object} options
    * @param {function} [options.onComplete] - Called once the transition is complete
-   * @param {string|function} [options.transition] - The transtion type or custom transition
+   * @param {number|function} [options.transition] - The transition type or custom transition
    * @param {boolean} [options.preserveState] - Wheter or not view states should be rehydrated
    */
   __setViews(views, options) {
@@ -437,5 +456,7 @@ NavigationController.defaultProps = {
   transitionTension: 10,
   transitionFriction: 6
 };
+
+NavigationController.transitionType = transitionType;
 
 module.exports = NavigationController;
