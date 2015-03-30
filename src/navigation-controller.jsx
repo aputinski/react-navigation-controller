@@ -41,6 +41,12 @@ const argTypes = {
   }]
 };
 
+/**
+ * Validate the arguments passed into a method
+ *
+ * @param {string} method - The name of the method to validate
+ * @param {arguments} args - The arguments object that were passed to "method"
+ */
 function checkArguments(method, args) {
   const argType = argTypes[method];
   const argMap = {};
@@ -62,10 +68,8 @@ class NavigationController extends React.Component {
       views: dropRight(views),
       mountedViews: []
     };
-    const autoBind = [
-      '__onSpringUpdate', '__onSpringAtRest'
-    ];
-    autoBind.forEach(method => {
+    // Bind methats that were passed into createSpring()
+    ['__onSpringUpdate', '__onSpringAtRest'].forEach(method => {
       this[method] = this[method].bind(this);
     });
   }
@@ -96,6 +100,14 @@ class NavigationController extends React.Component {
     this.__viewSpring.destroy();
   }
 
+  /**
+   * Translate the view wrappers by a specified percentage
+   * 
+   * @param {number} prevX
+   * @param {number} prevY
+   * @param {number} nextX
+   * @param {number} nextY
+   */
   __transformViews(prevX, prevY, nextX, nextY) {
     const [prev,next] = this.__viewIndexes;
     const prevView = this[`__view-wrapper-${prev}`];
@@ -106,6 +118,13 @@ class NavigationController extends React.Component {
     });
   }
 
+  /**
+   * Map a 0-1 value to a percentage for __transformViews()
+   *
+   * @param {number} value
+   * @param {string} [transition] - The transition type
+   * @return {array}
+   */
   __animateViews(value=0, transition='none') {
     let prevX = 0, prevY = 0;
     let nextX = 0, nextY = 0;
@@ -131,6 +150,9 @@ class NavigationController extends React.Component {
     return [prevX,prevY,nextX,nextY];
   }
 
+  /**
+   * Called once a view animation has completed
+   */
   __animateViewsComplete() {
     this.__isTransitioning = false;
     const [prev,next] = this.__viewIndexes;
@@ -149,11 +171,22 @@ class NavigationController extends React.Component {
     });
   }
 
+  /**
+   * Set the display style of the view wrappers
+   *
+   * @param {string} value
+   */
   __displayViews(value) {
     this['__view-wrapper-0'].style.display = value;
     this['__view-wrapper-1'].style.display = value;
   }
 
+  /**
+   * Transtion the view wrappers manually, using a built-in animation, or custom animation
+   *
+   * @param {string} transition
+   * @param {function} [done] - Called once the transition is complete
+   */
   __transitionViews(transition, done) {
     this.__transitionViewsComplete = () => {
       delete this.__transitionViewsComplete;
@@ -204,6 +237,13 @@ class NavigationController extends React.Component {
     this.__spring.setCurrentValue(0);
   }
 
+  /**
+   * Push a new view onto the stack
+   *
+   * @param {ReactElement} view - The view to push onto the stack
+   * @param {function} done - Called once the transition is complete
+   * @param {string|function} [transition] - The transtion type or custom transition
+   */
   __pushView(view, done, transition='slide-left') {
     checkArguments('pushView', arguments);
     if (this.__isTransitioning) return;
@@ -235,6 +275,12 @@ class NavigationController extends React.Component {
     this.__isTransitioning = true;
   }
 
+  /**
+   * Pop the last view off the stack
+   *
+   * @param {function} done - Called once the transition is complete
+   * @param {string|function} [transition] - The transtion type or custom transition
+   */
   __popView(done, transition='slide-right') {
     checkArguments('popView', arguments);
     if (this.state.views.length === 1) {
