@@ -407,4 +407,49 @@ describe('NavigationController', () => {
       });
     });
   });
+  describe('#__renderPrevView', () => {
+    beforeEach(done => {
+      requestAnimationFrame(() => {
+        done();
+      });
+    });
+    it('returns null if the previous view is no longer mounted', () => {
+      expect(controller.__renderPrevView()).to.be.null;
+    });
+    it('returns a clone if the previous view is mounted', (done) => {
+      controller.__pushView(<ViewB />);
+      requestAnimationFrame(() => {
+        const prevView = controller.__renderPrevView();
+        const ref = controller.refs[`view-${controller.__viewIndexes[0]}`];
+        expect(prevView).not.to.be.null;
+        expect(ref).not.to.be.null;
+        expect(ref.props.navigationController).to.equal(controller);
+        done();
+      });
+    });
+  });
+  describe('#__renderNextView', () => {
+    beforeEach(done => {
+      requestAnimationFrame(() => {
+        done();
+      });
+    });
+    it('returns null if the next view is no longer mounted', (done) => {
+      controller.__pushView(<ViewB />, () => {
+        expect(controller.__renderNextView()).to.be.null;
+        done();
+      }, 'none');
+    });
+    it('returns a clone if the next view is mounted', (done) => {
+      controller.__pushView(<ViewB />);
+      requestAnimationFrame(() => {
+        const nextView = controller.__renderNextView();
+        const ref = controller.refs[`view-${controller.__viewIndexes[1]}`];
+        expect(nextView).not.to.be.null;
+        expect(ref).not.to.be.null;
+        expect(ref.props.navigationController).to.equal(controller);
+        done();
+      });
+    });
+  });
 })
