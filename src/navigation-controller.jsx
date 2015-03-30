@@ -343,6 +343,7 @@ class NavigationController extends React.Component {
    * @param {object} options
    * @param {function} [options.onComplete] - Called once the transition is complete
    * @param {string|function} [options.transition] - The transtion type or custom transition
+   * @param {boolean} [options.preserveState] - Wheter or not view states should be rehydrated
    */
   __setViews(views, options) {
     options = typeof options === 'object' ? options : {};
