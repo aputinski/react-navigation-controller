@@ -1,5 +1,8 @@
 # React NavigationController
 
+[![Build Status][travis-image]][travis-url]
+[![NPM version][npm-image]][npm-url]
+
 A React view manager similar to [UINavigationController][ios-controller]
 
 ## Instalation
@@ -184,3 +187,10 @@ npm start
 Visit [http://localhost:3000/index.dev.html]()
 
 [ios-controller]: https://developer.apple.com/library/ios/documentation/UIKit/Reference/UINavigationController_Class/
+
+[npm-url]: https://npmjs.org/package/react-navigation-controller
+[npm-image]: http://img.shields.io/npm/v/react-navigation-controller.svg
+
+[travis-url]: https://travis-ci.org/aputinski/react-navigation-controller
+[travis-image]: http://img.shields.io/travis/aputinski/react-navigation-controller.svg
+
