@@ -287,7 +287,7 @@ describe('NavigationController', () => {
     it('appends the view to state.views', (done) => {
       controller.__pushView(<ViewB />, {
         transition: 'none',
-        onComplete: () => {
+        onComplete() {
           expect(controller.state.views[1].type).to.equal(ViewB);
           done();
         }
@@ -296,7 +296,7 @@ describe('NavigationController', () => {
     it('sets state.transition', (done) => {
       controller.__pushView(<ViewB />, {
         transition: 'none',
-        onComplete: () => {
+        onComplete() {
           done();
         }
       });
@@ -308,7 +308,7 @@ describe('NavigationController', () => {
       const [prev,next] = controller.__viewIndexes;
       controller.__pushView(<ViewB />, {
         transition: 'none',
-        onComplete: () => {
+        onComplete() {
           expect(controller.state.views[1].type).to.equal(ViewB);
           done();
         }
@@ -333,7 +333,7 @@ describe('NavigationController', () => {
     it('calls the transitionDone callback', (done) => {
       controller.__pushView(<ViewB />, {
         transition: 'none',
-        onComplete: () => {
+        onComplete() {
           expect(true).to.be.true;
           done();
         }
@@ -394,7 +394,7 @@ describe('NavigationController', () => {
     });
     it('removes the last view from state.views', (done) => {
       controller.__popView({
-        onComplete: () => {
+        onComplete() {
           expect(controller.state.views).to.have.length(1);
           expect(controller.state.views[0].type).to.equal(ViewA);
           done();
@@ -405,7 +405,7 @@ describe('NavigationController', () => {
     it('sets state.transition', (done) => {
       controller.__popView({
         transition: 'none',
-        onComplete: () => {
+        onComplete() {
           done();
         }
       });
@@ -417,7 +417,7 @@ describe('NavigationController', () => {
       const [prev,next] = controller.__viewIndexes;
       controller.__popView({
         transition: 'none',
-        onComplete: () => {
+        onComplete() {
           done();
         }
       });
@@ -440,7 +440,7 @@ describe('NavigationController', () => {
     });
     it('calls the onComplete callback', (done) => {
       controller.__popView({
-        onComplete: () => {
+        onComplete() {
           expect(true).to.be.true;
           done();
         }
@@ -453,10 +453,10 @@ describe('NavigationController', () => {
         });
         controller.pushView(<ViewB />, {
           transition: 'none',
-          onComplete: () => {
+          onComplete() {
             controller.popView({
               transition: 'none',
-              onComplete: () => {
+             onComplete() {
                 expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
                   .not.to.have.property('foo');
                 done();
@@ -475,11 +475,11 @@ describe('NavigationController', () => {
           foo: 'bar'
         });
         controller.pushView(<ViewB />, {
-          onComplete: () => {
+          onComplete() {
             transition: 'none',
             controller.popView({
               transition: 'none',
-              onComplete: () => {
+              onComplete() {
                 expect(controller.refs[`view-${controller.__viewIndexes[0]}`].state)
                   .to.have.property('foo');
                 done();
@@ -488,6 +488,29 @@ describe('NavigationController', () => {
           }
         });
       });
+    });
+  });
+  describe.only('#__setViews', () => {
+    beforeEach(done => {
+      requestAnimationFrame(() => {
+        done();
+      });
+    });
+    it('pushes the last view on the stack', () => {
+      controller.__setViews([<ViewB />], {
+        transition: 'none',
+        onComplete() {
+          expect(controller.state.views).to.have.length(1);
+        }
+      })
+    });
+    it('clears the saved view states', () => {
+      controller.__setViews([<ViewB />], {
+        transition: 'none',
+        onComplete() {
+          expect(controller.__viewStates).to.have.length(0);
+        }
+      })
     });
   });
   describe('#__renderPrevView', () => {
@@ -520,7 +543,7 @@ describe('NavigationController', () => {
     it('returns null if the next view is no longer mounted', (done) => {
       controller.__pushView(<ViewB />, {
         transition: 'none',
-        onComplete: () => {
+        onComplete() {
           expect(controller.__renderNextView()).to.be.null;
           done();
         }

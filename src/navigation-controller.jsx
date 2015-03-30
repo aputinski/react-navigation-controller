@@ -37,6 +37,12 @@ const optionTypes = {
       React.PropTypes.string
     ]),
     onComplete: React.PropTypes.func
+  },
+  setViews: {
+    views: React.PropTypes.arrayOf(
+      React.PropTypes.element
+    ).isRequired,
+    preserveState: React.PropTypes.bool
   }
 };
 
@@ -329,6 +335,35 @@ class NavigationController extends React.Component {
     this.__isTransitioning = true;
   }
 
+  /**
+   * Replace the views currently managed by the controller
+   * with the specified items.
+   *
+   * @param {array} views
+   * @param {object} options
+   * @param {function} [options.onComplete] - Called once the transition is complete
+   * @param {string|function} [options.transition] - The transtion type or custom transition
+   */
+  __setViews(views, options) {
+    options = typeof options === 'object' ? options : {};
+    checkOptions('setViews', options);
+    const {onComplete,preserveState} = options;
+    options = assign({}, options, {
+      onComplete: () => {
+        this.__viewStates.length = 0;
+        this.setState({
+          views,
+          preserveState
+        }, () => {
+          if (onComplete) {
+            onComplete();
+          }
+        });
+      }
+    });
+    this.__pushView(last(views), options);
+  }
+
   pushView() {
     this.__pushView.apply(this, arguments);
   }
@@ -338,7 +373,7 @@ class NavigationController extends React.Component {
   }
 
   setViews() {
-    this.setViews.apply(this, arguments);
+    this.__setViews.apply(this, arguments);
   }
 
   __renderPrevView() {
