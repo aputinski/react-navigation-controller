@@ -36,9 +36,8 @@ class App extends React.Component {
     const props = {
       // The views to place in the stack. The front-to-back order
       // of the views in this array represents the new bottom-to-top
-      // order of the navigationController in navigation stack.
-      // Thus, the last item added to the array becomes the top item
-      // of the navigation stack.
+      // order of the navigation stack. Thus, the last item added to
+      // the array becomes the top item of the navigation stack.
       // NOTE: This can only be updated via `setViews()`
       views: [
         <LoginView />
