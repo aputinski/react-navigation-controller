@@ -1,7 +1,11 @@
 {
   "name": "react-navigation-controller",
   "version": "1.0.0",
-  "description": "",
+  "description": "A React view mananger similar to UINavigationController",
+  "keywords": [
+    "react",
+    "react-component"
+  ],
   "license": "MIT",
   "main": "dist/navigation-controller.js",
   "scripts": {
@@ -37,7 +41,6 @@
     "mocha": "^2.2.1",
     "react": "0.13.1",
     "sinon": "^1.14.1",
-    "uglify-js": "^2.4.17",
     "webpack": "^1.7.3",
     "webpack-dev-server": "^1.7.0"
   }
