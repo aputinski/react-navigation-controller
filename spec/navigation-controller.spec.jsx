@@ -304,13 +304,13 @@ describe('NavigationController', () => {
         }
       });
       requestAnimationFrame(() => {
-        expect(controller.state.transition).to.equal('none');
+        expect(controller.state.transition).to.equal(transitionType.NONE);
       });
     });
     it('sets state.mountedViews', (done) => {
       const [prev,next] = controller.__viewIndexes;
       controller.__pushView(<ViewB />, {
-        transition: transitionType.NONE,
+        transition: transitionType.PUSH_LEFT,
         onComplete() {
           expect(controller.state.views[1].type).to.equal(ViewB);
           done();
@@ -413,13 +413,13 @@ describe('NavigationController', () => {
         }
       });
       requestAnimationFrame(() => {
-        expect(controller.state.transition).to.equal('none');
+        expect(controller.state.transition).to.equal(transitionType.NONE);
       });
     });
     it('sets state.mountedViews', (done) => {
       const [prev,next] = controller.__viewIndexes;
       controller.__popView({
-        transition: transitionType.NONE,
+        transition: transitionType.PUSH_RIGHT,
         onComplete() {
           done();
         }
