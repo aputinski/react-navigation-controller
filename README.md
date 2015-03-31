@@ -150,7 +150,7 @@ Pop the last view off the stack
 
 ##### `options` `{object}`
 
-Addtional options - see [Push()](#push-options)
+Addtional options - see [pushView()](#push-options)
 
 ##### `options.transiton` `{number|function}` `default=Transition.type.PUSH_RIGHT`
 
@@ -172,7 +172,7 @@ becomes the top item of the navigation stack.
 
 ##### `options` `{object}`
 
-Addtional options - see [Push()](#push-options)
+Addtional options - see [pushView()](#push-options)
 
 ##### `options.preserveState` `{boolean}` `default=false`
 
