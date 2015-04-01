@@ -84,7 +84,7 @@ class NavigationController extends React.Component {
       preserveState,
       mountedViews: []
     };
-    // Bind methats that were passed into createSpring()
+    // React no longer auto binds
     ['__onSpringUpdate', '__onSpringAtRest'].forEach(method => {
       this[method] = this[method].bind(this);
     });
