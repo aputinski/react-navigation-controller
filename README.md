@@ -26,7 +26,7 @@ class LoginView extends React.Component {
     this.props.navigationController.pushView(
       <div>Welcome to the app!</div>
     );
-  },
+  }
   render() {
     return (
       <div>
