@@ -48,6 +48,11 @@ class View extends React.Component {
       transition: Transition.type.COVER_UP
     });
   }
+  onPopToRoot() {
+    this.props.navigationController.popToRootView({
+      transition: this.props.modal ? Transition.type.REVEAL_DOWN : Transition.type.PUSH_RIGHT
+    });
+  }
   render() {
     return (
       <div
@@ -65,6 +70,7 @@ class View extends React.Component {
           <button onClick={this.onModal.bind(this)}>
             Show Modal
           </button>
+          {this.renderPopToRootButton()}
         </section>
       </div>
     );
@@ -79,6 +85,11 @@ class View extends React.Component {
     return this.props.modal === true
       ? <div />
       : <button onClick={this.onNext.bind(this)}>Next</button>;
+  }
+  renderPopToRootButton() {
+    return this.props.index === 1
+      ? <div />
+      : <button onClick={this.onPopToRoot.bind(this)}>Pop To Root</button>;
   }
 }
 
