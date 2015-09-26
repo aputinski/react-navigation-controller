@@ -86,9 +86,6 @@ describe('NavigationController', () => {
       expect(viewWrapper1).to.have.deep.property(`style.${transformPrefix}`);
     });
   });
-  describe('#componentWillUnmout', () => {
-    
-  });
   describe('#__transformViews', () => {
     beforeEach(done => {
       requestAnimationFrame(() => {
@@ -461,6 +458,24 @@ describe('NavigationController', () => {
           done();
         });
       })
+    });
+    it('calls lifecycle events', (done) => {
+      const didShowViewSpy = sinon.spy();
+      const didHideViewSpy = sinon.spy();
+      controller.__pushView(<ViewB />, {
+        transition: Transition.type.NONE
+      });
+      controller.forceUpdate(() => {
+        let prevView = controller.refs['view-0'];
+        let nextView = controller.refs['view-1'];
+        prevView.navigationControllerDidHideView = didHideViewSpy;
+        nextView.navigationControllerDidShowView = didShowViewSpy;
+        requestAnimationFrame(() => {
+          expect(didHideViewSpy.calledOnce).to.be.true;
+          expect(didShowViewSpy.calledOnce).to.be.true;
+          done();
+        });
+      });
     });
   });
   describe('#__popView', () => {
