@@ -31,6 +31,24 @@ class View extends React.Component {
       counter: this.state.counter + 1
     });
   }
+  componentDidMount() {
+    console.log('component did mount', this.props.index);
+  }
+  navigationControllerWillShowView() {
+    console.log('will show view', this.props.index);
+  }
+  navigationControllerDidShowView() {
+    console.log('did show view', this.props.index);
+  }
+  navigationControllerWillHideView() {
+    console.log('will hide view', this.props.index);
+  }
+  navigationControllerDidHideView() {
+    console.log('did hide view', this.props.index);
+  }
+  componentWillUnmount() {
+    console.log('component will unmount', this.props.index);
+  }
   onNext() {
     const view = <View index={this.props.index+1} />;
     this.props.navigationController.pushView(view, {

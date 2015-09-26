@@ -206,10 +206,21 @@ class NavigationController extends React.Component {
     // Hide the previous view wrapper
     const prevViewWrapper = this[`__view-wrapper-${prev}`];
           prevViewWrapper.style.display = 'none';
+    // Did hide view lifecycle event
+    const prevView = this.refs['view-0'];
+    if (prevView && typeof prevView.navigationControllerDidHideView === 'function') {
+      prevView.navigationControllerDidHideView(this);
+    }
+    // Did show view lifecycle event
+    const nextView = this.refs['view-1'];
+    if (nextView && typeof nextView.navigationControllerDidShowView === 'function') {
+      nextView.navigationControllerDidShowView(this);
+    }
     // Unmount the previous view
     const mountedViews = [];
           mountedViews[prev] = null;
           mountedViews[next] = last(this.state.views);
+
     this.setState({
       transition: null,
       mountedViews: mountedViews
@@ -254,6 +265,16 @@ class NavigationController extends React.Component {
         onComplete();
       }
     };
+    // Will hide view lifecycle event
+    const prevView = this.refs['view-0'];
+    if (prevView && typeof prevView.navigationControllerWillHideView === 'function') {
+      prevView.navigationControllerWillHideView(this);
+    }
+    // Will show view lifecycle event
+    const nextView = this.refs['view-1'];
+    if (nextView && typeof nextView.navigationControllerWillShowView === 'function') {
+      nextView.navigationControllerWillShowView(this);
+    }
     // Built-in transition
     if (typeof transition === 'number') {
       // Manually transition the views
@@ -281,7 +302,7 @@ class NavigationController extends React.Component {
     if (typeof transition === 'function') {
       const [prev,next] = this.__viewIndexes;
       const prevView = this[`__view-wrapper-${prev}`];
-      const nextView = this[`__view-wrapper-${next}`]; 
+      const nextView = this[`__view-wrapper-${next}`];
       transition(prevView, nextView, () => {
         this.__animateViewsComplete();
         this.__transitionViewsComplete();
