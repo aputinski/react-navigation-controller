@@ -677,7 +677,7 @@ describe('NavigationController', () => {
           didShow: sinon.spy()
         }
       }
-      var stub = sinon.stub(controller, '__transitionViews', (options) => {
+      const stub = sinon.stub(controller, '__transitionViews', (options) => {
         let prevView = controller.refs['view-0'];
         if (prevView) {
           prevView.navigationControllerWillHideView = e.prevView.willHide;
