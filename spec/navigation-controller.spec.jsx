@@ -460,21 +460,29 @@ describe('NavigationController', () => {
       })
     });
     it('calls lifecycle events', (done) => {
-      const didShowViewSpy = sinon.spy();
+      const willHideViewSpy = sinon.spy();
+      const willShowViewSpy = sinon.spy();
       const didHideViewSpy = sinon.spy();
-      controller.__pushView(<ViewB />, {
-        transition: Transition.type.NONE
-      });
-      controller.forceUpdate(() => {
+      const didShowViewSpy = sinon.spy();
+      var stub = sinon.stub(controller, '__transitionViews', function (options) {
         let prevView = controller.refs['view-0'];
         let nextView = controller.refs['view-1'];
+        prevView.navigationControllerWillHideView = willHideViewSpy;
+        nextView.navigationControllerWillShowView = willShowViewSpy;
         prevView.navigationControllerDidHideView = didHideViewSpy;
         nextView.navigationControllerDidShowView = didShowViewSpy;
+        stub.restore();
+        controller.__transitionViews(options);
         requestAnimationFrame(() => {
+          expect(willHideViewSpy.calledOnce).to.be.true;
+          expect(willShowViewSpy.calledOnce).to.be.true;
           expect(didHideViewSpy.calledOnce).to.be.true;
           expect(didShowViewSpy.calledOnce).to.be.true;
           done();
         });
+      });
+      controller.__pushView(<ViewB />, {
+        transition: Transition.type.NONE
       });
     });
   });
