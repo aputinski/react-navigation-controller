@@ -46,7 +46,6 @@ const optionTypes = {
     onComplete: React.PropTypes.func
   },
   popToRootView: {
-    preserveState: React.PropTypes.bool,
     transition: React.PropTypes.oneOfType([
       React.PropTypes.func,
       React.PropTypes.number
