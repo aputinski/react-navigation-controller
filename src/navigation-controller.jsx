@@ -452,8 +452,6 @@ class NavigationController extends React.Component {
     const mountedViews = [];
           mountedViews[prev] = topView;
           mountedViews[next] = rootView;
-    console.log('prev', topView.props.index)
-    console.log('next', rootView.props.index)
     // Display only the root view
     const views = [rootView];
     // Show the wrappers
