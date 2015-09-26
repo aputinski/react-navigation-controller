@@ -5,7 +5,7 @@
 
 React view manager similar to [UINavigationController][ios-controller]
 
-## Instalation
+## Installation
 
 ```bash
 npm install react-navigation-controller
@@ -179,6 +179,46 @@ Addtional options - see [pushView()](#push-options)
 If set to `true`, the navigationController will save the state
 of each view that gets pushed onto the stack. When `popView()` is called,
 the navigationController will rehydrate the state of the view before it is shown.
+
+## Lifecycle Events
+
+Similar to the React component lifecycle, the navigationController will
+call lifecycle events on the component at certain stages.
+
+Lifecycle events can trigger actions when views transition in or out,
+instead of mounted or unmounted:
+
+```
+class HelloView extends React.Component {
+  navigationControllerDidShowView() {
+    // Do something when the show transition is finished,
+    // like fade in an element.
+  }
+  navigationControllerWillHideView() {
+    // Do something when the hide transition will start,
+    // like fade out an element.
+  }
+  render() {
+    return <div>Hello, {this.props.name}!</div>;
+  }
+}
+```
+
+### `view.navigationControllerWillHideView()`
+
+Invoked immediately before the previous view will be hidden.
+
+### `view.navigationControllerWillShowView()`
+
+Invoked immediately before the next view will be shown.
+
+### `view.navigationControllerDidHideView()`
+
+Invoked immediately after the previous view has been hidden.
+
+### `view.navigationControllerDidShowView()`
+
+Invoked immediately after the next view has been shown.
 
 ## Styling
 
