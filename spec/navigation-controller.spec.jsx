@@ -32,7 +32,7 @@ describe('NavigationController', () => {
     );
     viewWrapper0 = controller['__view-wrapper-0'];
     viewWrapper1 = controller['__view-wrapper-1'];
-  })
+  });
   it('exports a component', () => {
     let controller = renderIntoDocument(
       <NavigationController views={views} />
@@ -459,32 +459,6 @@ describe('NavigationController', () => {
         });
       })
     });
-    it('calls lifecycle events', (done) => {
-      const willHideViewSpy = sinon.spy();
-      const willShowViewSpy = sinon.spy();
-      const didHideViewSpy = sinon.spy();
-      const didShowViewSpy = sinon.spy();
-      var stub = sinon.stub(controller, '__transitionViews', function (options) {
-        let prevView = controller.refs['view-0'];
-        let nextView = controller.refs['view-1'];
-        prevView.navigationControllerWillHideView = willHideViewSpy;
-        nextView.navigationControllerWillShowView = willShowViewSpy;
-        prevView.navigationControllerDidHideView = didHideViewSpy;
-        nextView.navigationControllerDidShowView = didShowViewSpy;
-        stub.restore();
-        controller.__transitionViews(options);
-        requestAnimationFrame(() => {
-          expect(willHideViewSpy.calledOnce).to.be.true;
-          expect(willShowViewSpy.calledOnce).to.be.true;
-          expect(didHideViewSpy.calledOnce).to.be.true;
-          expect(didShowViewSpy.calledOnce).to.be.true;
-          done();
-        });
-      });
-      controller.__pushView(<ViewB />, {
-        transition: Transition.type.NONE
-      });
-    });
   });
   describe('#__popView', () => {
     beforeEach(done => {
@@ -688,6 +662,117 @@ describe('NavigationController', () => {
         expect(ref).not.to.be.null;
         expect(ref.props.navigationController).to.equal(controller);
         done();
+      });
+    });
+  });
+  describe('Lifecycle Events', () => {
+    let stubLifecycleEvents = (onTransitionViews) => {
+      const e = {
+        prevView: {
+          willHide: sinon.spy(),
+          didHide: sinon.spy()
+        },
+        nextView: {
+          willShow: sinon.spy(),
+          didShow: sinon.spy()
+        }
+      }
+      var stub = sinon.stub(controller, '__transitionViews', (options) => {
+        let prevView = controller.refs['view-0'];
+        if (prevView) {
+          prevView.navigationControllerWillHideView = e.prevView.willHide;
+          prevView.navigationControllerDidHideView = e.prevView.didHide;
+        }
+        let nextView = controller.refs['view-1'];
+        if (nextView) {
+          nextView.navigationControllerWillShowView = e.nextView.willShow;
+          nextView.navigationControllerDidShowView = e.nextView.didShow;
+        }
+        stub.restore();
+        controller.__transitionViews(options);
+        onTransitionViews();
+      });
+      return e;
+    };
+    describe('#__pushView', () => {
+      beforeEach(done => {
+        requestAnimationFrame(() => {
+          done();
+        });
+      });
+      it('calls events with a "none" transition', (done) => {
+        const e = stubLifecycleEvents(() => {
+          expect(e.prevView.willHide.calledOnce).to.be.true;
+          expect(e.nextView.willShow.calledOnce).to.be.true;
+          expect(e.prevView.didHide.calledOnce).to.be.false;
+          expect(e.nextView.didShow.calledOnce).to.be.false;
+        });
+        controller.__pushView(<ViewB />, {
+          transition: Transition.type.NONE,
+          onComplete() {
+            expect(e.prevView.didHide.calledOnce).to.be.true;
+            expect(e.nextView.didShow.calledOnce).to.be.true;
+            done();
+          }
+        });
+      });
+      it('calls events with a built-in spring animation', (done) => {
+        const e = stubLifecycleEvents(() => {
+          expect(e.prevView.willHide.calledOnce).to.be.true;
+          expect(e.nextView.willShow.calledOnce).to.be.true;
+          expect(e.prevView.didHide.calledOnce).to.be.false;
+          expect(e.nextView.didShow.calledOnce).to.be.false;
+        });
+        controller.__pushView(<ViewB />, {
+          transition: Transition.type.PUSH_LEFT,
+          onComplete() {
+            expect(e.prevView.didHide.calledOnce).to.be.true;
+            expect(e.nextView.didShow.calledOnce).to.be.true;
+            done();
+          }
+        });
+      });
+    });
+    describe('#__popView', () => {
+      beforeEach(done => {
+        controller = renderIntoDocument(
+          <NavigationController views={[<ViewA />,<ViewB />]} />
+        );
+        requestAnimationFrame(() => {
+          done();
+        });
+      });
+      it('calls events with a "none" transition', (done) => {
+        const e = stubLifecycleEvents(() => {
+          expect(e.prevView.willHide.calledOnce).to.be.true;
+          expect(e.nextView.willShow.calledOnce).to.be.true;
+          expect(e.prevView.didHide.calledOnce).to.be.false;
+          expect(e.nextView.didShow.calledOnce).to.be.false;
+        });
+        controller.__popView({
+          transition: Transition.type.NONE,
+          onComplete() {
+            expect(e.prevView.didHide.calledOnce).to.be.true;
+            expect(e.nextView.didShow.calledOnce).to.be.true;
+            done();
+          }
+        });
+      });
+      it('calls events with a built-in spring animation', (done) => {
+        const e = stubLifecycleEvents(() => {
+          expect(e.prevView.willHide.calledOnce).to.be.true;
+          expect(e.nextView.willShow.calledOnce).to.be.true;
+          expect(e.prevView.didHide.calledOnce).to.be.false;
+          expect(e.nextView.didShow.calledOnce).to.be.false;
+        });
+        controller.__popView({
+          transition: Transition.type.PUSH_LEFT,
+          onComplete() {
+            expect(e.prevView.didHide.calledOnce).to.be.true;
+            expect(e.nextView.didShow.calledOnce).to.be.true;
+            done();
+          }
+        });
       });
     });
   });
