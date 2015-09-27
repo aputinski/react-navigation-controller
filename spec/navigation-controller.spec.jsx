@@ -20,6 +20,7 @@ const transformPrefix = getVendorPrefix('transform');
 const View = require('../examples/src/view');
 class ViewA extends View { }
 class ViewB extends View { }
+class ViewC extends View { }
 
 describe('NavigationController', () => {
   const views = [
@@ -592,6 +593,145 @@ describe('NavigationController', () => {
                 done();
               }
             });
+          }
+        });
+      });
+    });
+  });
+  describe('#__popToRootView', () => {
+    beforeEach(done => {
+      controller = renderIntoDocument(
+        <NavigationController views={[<ViewA />,<ViewB />,<ViewC />]} />
+      );
+      requestAnimationFrame(() => {
+        done();
+      });
+    });
+    it('throws an error if an only one view is in the stack', () => {
+      controller.state.views = [<ViewA />];
+      expect(() => {
+        controller.__popToRootView()
+      }).to.throw(/stack/);
+    });
+    it('returns early if the controller is already transitioning', () => {
+      const spy = sinon.spy(controller, 'setState');
+      controller.__isTransitioning = true;
+      controller.__popToRootView();
+      expect(spy.called).not.to.be.true;
+    });
+    it('shows the view wrappers', () => {
+      const spy = sinon.spy(controller, '__displayViews');
+      controller.__popToRootView();
+      expect(spy.calledWith('block')).to.be.true;
+    });
+    it('removes all but the root view from state.views', (done) => {
+      controller.__popToRootView({
+        onComplete() {
+          expect(controller.state.views).to.have.length(1);
+          expect(controller.state.views[0].type).to.equal(ViewA);
+          done();
+        },
+        transition: Transition.type.NONE
+      });
+    });
+    it('sets state.transition', (done) => {
+      controller.__popToRootView({
+        transition: Transition.type.NONE,
+        onComplete() {
+          done();
+        }
+      });
+      requestAnimationFrame(() => {
+        expect(controller.state.transition).to.equal(Transition.type.NONE);
+      });
+    });
+    it('sets state.mountedViews', (done) => {
+      const [prev,next] = controller.__viewIndexes;
+      controller.__popToRootView({
+        transition: Transition.type.PUSH_RIGHT,
+        onComplete() {
+          done();
+        }
+      });
+      requestAnimationFrame(() => {
+        expect(controller.state.mountedViews[prev].type).to.equal(ViewC);
+        expect(controller.state.mountedViews[next].type).to.equal(ViewA);
+      });
+    });
+    it('transitions the views', (done) => {
+      const spy = sinon.spy(controller, '__transitionViews');
+      controller.__popToRootView({ transition: Transition.type.NONE });
+      requestAnimationFrame(() => {
+        expect(spy.calledOnce).to.be.true;
+        done();
+      });
+    });
+    it('sets __isTransitioning=true', () => {
+      controller.__popToRootView({ transition: Transition.type.NONE });
+      expect(controller.__isTransitioning).to.be.true;
+    });
+    it('calls the onComplete callback', (done) => {
+      controller.__popToRootView({
+        onComplete() {
+          expect(true).to.be.true;
+          done();
+        }
+      });
+    });
+    it('does not rehydrate the state', (done) => {
+      controller = renderIntoDocument(
+        <NavigationController views={[<ViewA />]} preserveState={false} />
+      );
+      requestAnimationFrame(() => {
+        var rootView = controller.refs[`view-${controller.__viewIndexes[0]}`];
+        rootView.setState({
+          foo: 'bar'
+        });
+        controller.pushView(<ViewB />, {
+          transition: Transition.type.NONE,
+          onComplete() {
+            controller.pushView(<ViewC />, {
+              transition: Transition.type.NONE,
+              onComplete() {
+                controller.popToRootView({
+                  transition: Transition.type.NONE,
+                 onComplete() {
+                    rootView = controller.refs[`view-${controller.__viewIndexes[1]}`];
+                    expect(rootView.state)
+                      .not.to.have.property('foo');
+                    done();
+                  }
+                });
+              }
+            })
+          }
+        });
+      });
+    });
+    it('rehydrates the state', (done) => {
+      controller = renderIntoDocument(
+        <NavigationController views={[<ViewA />]} preserveState={true} />
+      );
+      requestAnimationFrame(() => {
+        controller.refs[`view-${controller.__viewIndexes[0]}`].setState({
+          foo: 'bar'
+        });
+        controller.pushView(<ViewB />, {
+          transition: Transition.type.NONE,
+          onComplete() {
+            controller.pushView(<ViewC />, {
+              transition: Transition.type.NONE,
+              onComplete() {
+                controller.popToRootView({
+                  transition: Transition.type.NONE,
+                 onComplete() {
+                    expect(controller.refs[`view-${controller.__viewIndexes[1]}`].state)
+                      .to.have.property('foo');
+                    done();
+                  }
+                });
+              }
+            })
           }
         });
       });
