@@ -156,6 +156,20 @@ Addtional options - see [pushView()](#push-options)
 
 ***
 
+### `popToRootView([options])`
+
+Pop the all the views off the stack except the first (root) view
+
+**Arguments**
+
+##### `options` `{object}`
+
+Addtional options - see [pushView()](#push-options)
+
+##### `options.transiton` `{number|function}` `default=Transition.type.PUSH_RIGHT`
+
+***
+
 ### `setViews(views, [options])`
 
 Replaces the views currently managed by the navigationController
