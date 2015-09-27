@@ -61,7 +61,7 @@ class App extends React.Component {
       // http://facebook.github.io/rebound-js/docs/rebound.html
       // Defaults to 10
       transitionTension: 12,
-      
+
       // The spring friction for transitions
       // Defaults to 6
       transitionFriction: 5
@@ -188,7 +188,7 @@ call lifecycle events on the component at certain stages.
 Lifecycle events can trigger actions when views transition in or out,
 instead of mounted or unmounted:
 
-```
+```javascript
 class HelloView extends React.Component {
   navigationControllerDidShowView() {
     // Do something when the show transition is finished,
