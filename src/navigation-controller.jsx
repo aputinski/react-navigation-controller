@@ -45,6 +45,13 @@ const optionTypes = {
     ]),
     onComplete: React.PropTypes.func
   },
+  popToRootView: {
+    transition: React.PropTypes.oneOfType([
+      React.PropTypes.func,
+      React.PropTypes.number
+    ]),
+    onComplete: React.PropTypes.func
+  },
   setViews: {
     views: React.PropTypes.arrayOf(
       React.PropTypes.element
@@ -448,12 +455,61 @@ class NavigationController extends React.Component {
     this.__pushView(last(views), options);
   }
 
+  __popToRootView(options) {
+    options = typeof options === 'object' ? options : {};
+    const defaults = {
+      transition: Transition.type.PUSH_RIGHT
+    };
+    options = assign({}, defaults, options);
+    checkOptions('popToRootView', options);
+    if (this.state.views.length === 1) {
+      throw new Error('popToRootView() can only be called with two or more views in the stack')
+    };
+    if (this.__isTransitioning) return;
+    const {transition} = options;
+    const [prev,next] = this.__viewIndexes;
+    const rootView = this.state.views[0];
+    const topView = last(this.state.views);
+    const mountedViews = [];
+          mountedViews[prev] = topView;
+          mountedViews[next] = rootView;
+    // Display only the root view
+    const views = [rootView];
+    // Show the wrappers
+    this.__displayViews('block');
+    // Pop from the top view, all the way to the root view
+    this.setState({
+      transition,
+      views,
+      mountedViews
+    }, () => {
+      // The view that will be shown
+      const rootView = this.refs[`view-1`];
+      if (rootView && this.state.preserveState) {
+        const state = this.__viewStates[0];
+        // Rehydrate the state
+        if (state) {
+          rootView.setState(state);  
+        }
+      }
+      // Clear view states
+      this.__viewStates.length = 0;
+      // Transition
+      this.__transitionViews(options);
+    });
+    this.__isTransitioning = true;
+  }
+
   pushView() {
     this.__pushView.apply(this, arguments);
   }
 
   popView() {
     this.__popView.apply(this, arguments);
+  }
+
+  popToRootView() {
+    this.__popToRootView.apply(this, arguments);
   }
 
   setViews() {
