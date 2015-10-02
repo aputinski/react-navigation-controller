@@ -834,6 +834,18 @@ describe('NavigationController', () => {
       });
       return e;
     };
+    let expectCallsBeforeTransition = (e) => {
+      expect(e.prevView.willHide.calledOnce).to.be.true;
+      expect(e.nextView.willShow.calledOnce).to.be.true;
+      expect(e.prevView.didHide.calledOnce).to.be.false;
+      expect(e.nextView.didShow.calledOnce).to.be.false;
+      expect(e.prevView.willHide.calledBefore(e.nextView.willShow)).to.be.true;
+    };
+    let expectCallsAfterTransition = (e) => {
+      expect(e.prevView.didHide.calledOnce).to.be.true;
+      expect(e.nextView.didShow.calledOnce).to.be.true;
+      expect(e.prevView.didHide.calledBefore(e.nextView.didShow)).to.be.true;
+    };
     describe('#__pushView', () => {
       beforeEach(done => {
         requestAnimationFrame(() => {
@@ -842,32 +854,24 @@ describe('NavigationController', () => {
       });
       it('calls events with a "none" transition', (done) => {
         const e = stubLifecycleEvents(() => {
-          expect(e.prevView.willHide.calledOnce).to.be.true;
-          expect(e.nextView.willShow.calledOnce).to.be.true;
-          expect(e.prevView.didHide.calledOnce).to.be.false;
-          expect(e.nextView.didShow.calledOnce).to.be.false;
+          expectCallsBeforeTransition(e);
         });
         controller.__pushView(<ViewB />, {
           transition: Transition.type.NONE,
           onComplete() {
-            expect(e.prevView.didHide.calledOnce).to.be.true;
-            expect(e.nextView.didShow.calledOnce).to.be.true;
+            expectCallsAfterTransition(e);
             done();
           }
         });
       });
       it('calls events with a built-in spring animation', (done) => {
         const e = stubLifecycleEvents(() => {
-          expect(e.prevView.willHide.calledOnce).to.be.true;
-          expect(e.nextView.willShow.calledOnce).to.be.true;
-          expect(e.prevView.didHide.calledOnce).to.be.false;
-          expect(e.nextView.didShow.calledOnce).to.be.false;
+          expectCallsBeforeTransition(e);
         });
         controller.__pushView(<ViewB />, {
           transition: Transition.type.PUSH_LEFT,
           onComplete() {
-            expect(e.prevView.didHide.calledOnce).to.be.true;
-            expect(e.nextView.didShow.calledOnce).to.be.true;
+            expectCallsAfterTransition(e);
             done();
           }
         });
@@ -884,32 +888,58 @@ describe('NavigationController', () => {
       });
       it('calls events with a "none" transition', (done) => {
         const e = stubLifecycleEvents(() => {
-          expect(e.prevView.willHide.calledOnce).to.be.true;
-          expect(e.nextView.willShow.calledOnce).to.be.true;
-          expect(e.prevView.didHide.calledOnce).to.be.false;
-          expect(e.nextView.didShow.calledOnce).to.be.false;
+          expectCallsBeforeTransition(e);
         });
         controller.__popView({
           transition: Transition.type.NONE,
           onComplete() {
-            expect(e.prevView.didHide.calledOnce).to.be.true;
-            expect(e.nextView.didShow.calledOnce).to.be.true;
+            expectCallsAfterTransition(e);
             done();
           }
         });
       });
       it('calls events with a built-in spring animation', (done) => {
         const e = stubLifecycleEvents(() => {
-          expect(e.prevView.willHide.calledOnce).to.be.true;
-          expect(e.nextView.willShow.calledOnce).to.be.true;
-          expect(e.prevView.didHide.calledOnce).to.be.false;
-          expect(e.nextView.didShow.calledOnce).to.be.false;
+          expectCallsBeforeTransition(e);
         });
         controller.__popView({
           transition: Transition.type.PUSH_LEFT,
           onComplete() {
-            expect(e.prevView.didHide.calledOnce).to.be.true;
-            expect(e.nextView.didShow.calledOnce).to.be.true;
+            expectCallsAfterTransition(e);
+            done();
+          }
+        });
+      });
+    });
+    describe('#__popToRootView', () => {
+      beforeEach(done => {
+        controller = renderIntoDocument(
+          <NavigationController views={[<ViewA />,<ViewB />,<ViewC />]} />
+        );
+        requestAnimationFrame(() => {
+          done();
+        });
+      });
+      it('calls events with a "none" transition', (done) => {
+        const e = stubLifecycleEvents(() => {
+          expectCallsBeforeTransition(e);
+        });
+        controller.__popToRootView({
+          transition: Transition.type.NONE,
+          onComplete() {
+            expectCallsAfterTransition(e);
+            done();
+          }
+        });
+      });
+      it('calls events with a built-in spring animation', (done) => {
+        const e = stubLifecycleEvents(() => {
+          expectCallsBeforeTransition(e);
+        });
+        controller.__popToRootView({
+          transition: Transition.type.PUSH_LEFT,
+          onComplete() {
+            expectCallsAfterTransition(e);
             done();
           }
         });
