@@ -1,4 +1,5 @@
 const React = require('react');
+const ReactDOM = require('react-dom');
 
 const rebound = require('rebound');
 const {
@@ -114,8 +115,8 @@ class NavigationController extends React.Component {
 
   componentDidMount() {
     // Cache the view wrappers
-    this['__view-wrapper-0'] = React.findDOMNode(this.refs[`view-wrapper-0`]);
-    this['__view-wrapper-1'] = React.findDOMNode(this.refs[`view-wrapper-1`]);
+    this['__view-wrapper-0'] = ReactDOM.findDOMNode(this.refs[`view-wrapper-0`]);
+    this['__view-wrapper-1'] = ReactDOM.findDOMNode(this.refs[`view-wrapper-1`]);
     // Position the wrappers
     this.__transformViews(0, 0, -100, 0);
     // Push the last view
@@ -130,7 +131,7 @@ class NavigationController extends React.Component {
 
   /**
    * Translate the view wrappers by a specified percentage
-   * 
+   *
    * @param {number} prevX
    * @param {number} prevY
    * @param {number} nextX
@@ -416,7 +417,7 @@ class NavigationController extends React.Component {
         const state = this.__viewStates.pop();
         // Rehydrate the state
         if (state) {
-          nextView.setState(state);  
+          nextView.setState(state);
         }
       }
       // Transition
@@ -489,7 +490,7 @@ class NavigationController extends React.Component {
         const state = this.__viewStates[0];
         // Rehydrate the state
         if (state) {
-          rootView.setState(state);  
+          rootView.setState(state);
         }
       }
       // Clear view states
