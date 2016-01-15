@@ -76,6 +76,24 @@ describe('NavigationController', () => {
       expect(controller.__springSystem).to.be.an.instanceof(rebound.SpringSystem);
     });
   });
+  describe('#componentWillUnmount', () => {
+    let spring;
+    beforeEach(() => {
+      controller = new NavigationController({ views: views });
+      controller.componentWillMount();
+      spring = controller.__spring;
+      controller.componentWillUnmount();
+    })
+    it('cleans up spring system', () => {
+      expect(controller.__springSystem).to.be.undefined
+    });
+    it('cleans up spring', () => {
+      expect(controller.__spring).to.be.undefined
+    });
+    it('removes spring event listeners', () => {
+      expect(spring.listeners).to.deep.equal([]);
+    });
+  });
   describe('#componentDidMount', () => {
     it('caches the view wrappers', () => {
       expect(viewWrapper0).to.be.an.instanceof(HTMLElement);
