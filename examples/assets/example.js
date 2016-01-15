@@ -55,17 +55,29 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _reactDom = __webpack_require__(159);
+
+	var _reactDom2 = _interopRequireDefault(_reactDom);
+
+	var _navigationController = __webpack_require__(160);
+
+	var _navigationController2 = _interopRequireDefault(_navigationController);
+
+	var _view = __webpack_require__(170);
+
+	var _view2 = _interopRequireDefault(_view);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-	var React = __webpack_require__(2);
-	var ReactDOM = __webpack_require__(159);
-
-	var NavigationController = __webpack_require__(160);
-	var View = __webpack_require__(170);
 
 	var App = function (_React$Component) {
 	  _inherits(App, _React$Component);
@@ -79,36 +91,36 @@
 	  _createClass(App, [{
 	    key: 'render',
 	    value: function render() {
-	      return React.createElement(
+	      return _react2.default.createElement(
 	        'main',
 	        null,
-	        React.createElement(
+	        _react2.default.createElement(
 	          'h2',
 	          null,
 	          'Single View'
 	        ),
-	        React.createElement(
+	        _react2.default.createElement(
 	          'p',
 	          null,
 	          'Start with a single view on the stack'
 	        ),
-	        React.createElement(NavigationController, {
-	          views: [React.createElement(View, null)],
+	        _react2.default.createElement(_navigationController2.default, {
+	          views: [_react2.default.createElement(_view2.default, null)],
 	          preserveState: true,
 	          transitionTension: 10,
 	          transitionFriction: 6 }),
-	        React.createElement(
+	        _react2.default.createElement(
 	          'h2',
 	          null,
 	          'Multiple Views'
 	        ),
-	        React.createElement(
+	        _react2.default.createElement(
 	          'p',
 	          null,
 	          'Start with multiple views on the stack'
 	        ),
-	        React.createElement(NavigationController, {
-	          views: [React.createElement(View, null), React.createElement(View, { index: 2 }), React.createElement(View, { index: 3 })],
+	        _react2.default.createElement(_navigationController2.default, {
+	          views: [_react2.default.createElement(_view2.default, null), _react2.default.createElement(_view2.default, { index: 2 }), _react2.default.createElement(_view2.default, { index: 3 })],
 	          preserveState: true,
 	          transitionTension: 10,
 	          transitionFriction: 6 })
@@ -117,9 +129,9 @@
 	  }]);
 
 	  return App;
-	}(React.Component);
+	}(_react2.default.Component);
 
-	ReactDOM.render(React.createElement(App, null), document.getElementById('app'));
+	_reactDom2.default.render(_react2.default.createElement(App, null), document.getElementById('app'));
 
 /***/ },
 /* 2 */
@@ -19781,58 +19793,68 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _rebound = __webpack_require__(161);
+
+	var _rebound2 = _interopRequireDefault(_rebound);
+
+	var _classnames = __webpack_require__(163);
+
+	var _classnames2 = _interopRequireDefault(_classnames);
+
+	var _dom = __webpack_require__(165);
+
+	var _array = __webpack_require__(167);
+
+	var _object = __webpack_require__(168);
+
+	var _transition = __webpack_require__(169);
+
+	var Transition = _interopRequireWildcard(_transition);
+
+	function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var React = __webpack_require__(2);
+	var SpringSystem = _rebound2.default.SpringSystem;
+	var SpringConfig = _rebound2.default.SpringConfig;
+	var OrigamiValueConverter = _rebound2.default.OrigamiValueConverter;
+	var mapValueInRange = _rebound2.default.MathUtil.mapValueInRange;
 
-	var rebound = __webpack_require__(161);
-	var SpringSystem = rebound.SpringSystem;
-	var SpringConfig = rebound.SpringConfig;
-	var OrigamiValueConverter = rebound.OrigamiValueConverter;
-	var mapValueInRange = rebound.MathUtil.mapValueInRange;
-
-	var _require = __webpack_require__(163);
-
-	var getVendorPrefix = _require.getVendorPrefix;
-
-	var _require2 = __webpack_require__(165);
-
-	var dropRight = _require2.dropRight;
-	var last = _require2.last;
-	var takeRight = _require2.takeRight;
-
-	var _require3 = __webpack_require__(166);
-
-	var assign = _require3.assign;
-
-	var Transition = __webpack_require__(167);
-
-	var classNames = __webpack_require__(168);
-	var transformPrefix = getVendorPrefix('transform');
+	var transformPrefix = (0, _dom.getVendorPrefix)('transform');
 
 	var optionTypes = {
 	  pushView: {
-	    view: React.PropTypes.element.isRequired,
-	    transition: React.PropTypes.oneOfType([React.PropTypes.func, React.PropTypes.number]),
-	    onComplete: React.PropTypes.func
+	    view: _react2.default.PropTypes.element.isRequired,
+	    transition: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.func, _react2.default.PropTypes.number]),
+	    onComplete: _react2.default.PropTypes.func
 	  },
 	  popView: {
-	    transition: React.PropTypes.oneOfType([React.PropTypes.func, React.PropTypes.number]),
-	    onComplete: React.PropTypes.func
+	    transition: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.func, _react2.default.PropTypes.number]),
+	    onComplete: _react2.default.PropTypes.func
 	  },
 	  popToRootView: {
-	    transition: React.PropTypes.oneOfType([React.PropTypes.func, React.PropTypes.number]),
-	    onComplete: React.PropTypes.func
+	    transition: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.func, _react2.default.PropTypes.number]),
+	    onComplete: _react2.default.PropTypes.func
 	  },
 	  setViews: {
-	    views: React.PropTypes.arrayOf(React.PropTypes.element).isRequired,
-	    preserveState: React.PropTypes.bool,
-	    transition: React.PropTypes.oneOfType([React.PropTypes.func, React.PropTypes.number]),
-	    onComplete: React.PropTypes.func
+	    views: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element).isRequired,
+	    preserveState: _react2.default.PropTypes.bool,
+	    transition: _react2.default.PropTypes.oneOfType([_react2.default.PropTypes.func, _react2.default.PropTypes.number]),
+	    onComplete: _react2.default.PropTypes.func
 	  }
 	};
 
@@ -19865,7 +19887,7 @@
 	    var preserveState = _this$props.preserveState;
 
 	    _this.state = {
-	      views: dropRight(views),
+	      views: (0, _array.dropRight)(views),
 	      preserveState: preserveState,
 	      mountedViews: []
 	    };
@@ -19902,7 +19924,7 @@
 	      // Position the wrappers
 	      this.__transformViews(0, 0, -100, 0);
 	      // Push the last view
-	      this.pushView(last(this.props.views), {
+	      this.pushView((0, _array.last)(this.props.views), {
 	        transition: Transition.type.NONE
 	      });
 	    }
@@ -20032,7 +20054,7 @@
 	      // Unmount the previous view
 	      var mountedViews = [];
 	      mountedViews[prev] = null;
-	      mountedViews[next] = last(this.state.views);
+	      mountedViews[next] = (0, _array.last)(this.state.views);
 
 	      this.setState({
 	        transition: null,
@@ -20072,7 +20094,7 @@
 	        transitionTension: this.props.transitionTension,
 	        transitionFriction: this.props.transitionFriction
 	      };
-	      options = assign({}, defaults, options);
+	      options = (0, _object.assign)({}, defaults, options);
 	      var _options = options;
 	      var transition = _options.transition;
 	      var transitionTension = _options.transitionTension;
@@ -20160,7 +20182,7 @@
 	      var defaults = {
 	        transition: Transition.type.PUSH_LEFT
 	      };
-	      options = assign({}, defaults, options, { view: view });
+	      options = (0, _object.assign)({}, defaults, options, { view: view });
 	      checkOptions('pushView', options);
 	      if (this.__isTransitioning) return;
 	      var _options2 = options;
@@ -20174,7 +20196,7 @@
 	      var views = this.state.views.slice();
 	      // Alternate mounted views order
 	      var mountedViews = [];
-	      mountedViews[prev] = last(views);
+	      mountedViews[prev] = (0, _array.last)(views);
 	      mountedViews[next] = view;
 	      // Add the new view
 	      views = views.concat(view);
@@ -20215,7 +20237,7 @@
 	      var defaults = {
 	        transition: Transition.type.PUSH_RIGHT
 	      };
-	      options = assign({}, defaults, options);
+	      options = (0, _object.assign)({}, defaults, options);
 	      checkOptions('popView', options);
 	      if (this.state.views.length === 1) {
 	        throw new Error('popView() can only be called with two or more views in the stack');
@@ -20229,9 +20251,9 @@
 	      var prev = _viewIndexes5[0];
 	      var next = _viewIndexes5[1];
 
-	      var views = dropRight(this.state.views);
+	      var views = (0, _array.dropRight)(this.state.views);
 	      // Alternate mounted views order
-	      var p = takeRight(this.state.views, 2).reverse();
+	      var p = (0, _array.takeRight)(this.state.views, 2).reverse();
 	      var mountedViews = [];
 	      mountedViews[prev] = p[0];
 	      mountedViews[next] = p[1];
@@ -20280,7 +20302,7 @@
 	      var _onComplete = _options4.onComplete;
 	      var preserveState = _options4.preserveState;
 
-	      options = assign({}, options, {
+	      options = (0, _object.assign)({}, options, {
 	        onComplete: function onComplete() {
 	          _this7.__viewStates.length = 0;
 	          _this7.setState({
@@ -20293,7 +20315,7 @@
 	          });
 	        }
 	      });
-	      this.__pushView(last(views), options);
+	      this.__pushView((0, _array.last)(views), options);
 	    }
 	  }, {
 	    key: '__popToRootView',
@@ -20304,7 +20326,7 @@
 	      var defaults = {
 	        transition: Transition.type.PUSH_RIGHT
 	      };
-	      options = assign({}, defaults, options);
+	      options = (0, _object.assign)({}, defaults, options);
 	      checkOptions('popToRootView', options);
 	      if (this.state.views.length === 1) {
 	        throw new Error('popToRootView() can only be called with two or more views in the stack');
@@ -20319,7 +20341,7 @@
 	      var next = _viewIndexes6[1];
 
 	      var rootView = this.state.views[0];
-	      var topView = last(this.state.views);
+	      var topView = (0, _array.last)(this.state.views);
 	      var mountedViews = [];
 	      mountedViews[prev] = topView;
 	      mountedViews[next] = rootView;
@@ -20374,7 +20396,7 @@
 	    value: function __renderPrevView() {
 	      var view = this.state.mountedViews[0];
 	      if (!view) return null;
-	      return React.cloneElement(view, {
+	      return _react2.default.cloneElement(view, {
 	        ref: 'view-' + this.__viewIndexes[0],
 	        navigationController: this
 	      });
@@ -20384,7 +20406,7 @@
 	    value: function __renderNextView() {
 	      var view = this.state.mountedViews[1];
 	      if (!view) return null;
-	      return React.cloneElement(view, {
+	      return _react2.default.cloneElement(view, {
 	        ref: 'view-' + this.__viewIndexes[1],
 	        navigationController: this
 	      });
@@ -20392,21 +20414,21 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var className = classNames('ReactNavigationController', this.props.className);
-	      var wrapperClassName = classNames('ReactNavigationControllerView', {
+	      var className = (0, _classnames2.default)('ReactNavigationController', this.props.className);
+	      var wrapperClassName = (0, _classnames2.default)('ReactNavigationControllerView', {
 	        'ReactNavigationControllerView--transitioning': this.__isTransitioning
 	      });
-	      return React.createElement(
+	      return _react2.default.createElement(
 	        'div',
 	        { className: className },
-	        React.createElement(
+	        _react2.default.createElement(
 	          'div',
 	          {
 	            className: wrapperClassName,
 	            ref: 'view-wrapper-0' },
 	          this.__renderPrevView()
 	        ),
-	        React.createElement(
+	        _react2.default.createElement(
 	          'div',
 	          {
 	            className: wrapperClassName,
@@ -20418,13 +20440,13 @@
 	  }]);
 
 	  return NavigationController;
-	}(React.Component);
+	}(_react2.default.Component);
 
 	NavigationController.propTypes = {
-	  views: React.PropTypes.arrayOf(React.PropTypes.element).isRequired,
-	  preserveState: React.PropTypes.bool,
-	  transitionTension: React.PropTypes.number,
-	  transitionFriction: React.PropTypes.number
+	  views: _react2.default.PropTypes.arrayOf(_react2.default.PropTypes.element).isRequired,
+	  preserveState: _react2.default.PropTypes.bool,
+	  transitionTension: _react2.default.PropTypes.number,
+	  transitionFriction: _react2.default.PropTypes.number
 	};
 
 	NavigationController.defaultProps = {
@@ -20435,7 +20457,7 @@
 
 	NavigationController.Transition = Transition;
 
-	module.exports = NavigationController;
+	exports.default = NavigationController;
 
 /***/ },
 /* 161 */
@@ -21638,26 +21660,93 @@
 /* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
+	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+	/*!
+	  Copyright (c) 2016 Jed Watson.
+	  Licensed under the MIT License (MIT), see
+	  http://jedwatson.github.io/classnames
+	*/
+	/* global define */
+
+	(function () {
+		'use strict';
+
+		var hasOwn = {}.hasOwnProperty;
+
+		function classNames() {
+			var classes = [];
+
+			for (var i = 0; i < arguments.length; i++) {
+				var arg = arguments[i];
+				if (!arg) continue;
+
+				var argType = typeof arg === 'undefined' ? 'undefined' : _typeof(arg);
+
+				if (argType === 'string' || argType === 'number') {
+					classes.push(arg);
+				} else if (Array.isArray(arg)) {
+					classes.push(classNames.apply(null, arg));
+				} else if (argType === 'object') {
+					for (var key in arg) {
+						if (hasOwn.call(arg, key) && arg[key]) {
+							classes.push(key);
+						}
+					}
+				}
+			}
+
+			return classes.join(' ');
+		}
+
+		if (typeof module !== 'undefined' && module.exports) {
+			module.exports = classNames;
+		} else if ("function" === 'function' && _typeof(__webpack_require__(164)) === 'object' && __webpack_require__(164)) {
+			// register as 'classnames', consistent with npm package name
+			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+				return classNames;
+			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+		} else {
+			window.classNames = classNames;
+		}
+	})();
+
+/***/ },
+/* 164 */
+/***/ function(module, exports) {
+
+	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
+
+	/* WEBPACK VAR INJECTION */}.call(exports, {}))
+
+/***/ },
+/* 165 */
+/***/ function(module, exports, __webpack_require__) {
+
 	'use strict';
 
-	var _require = __webpack_require__(164);
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.getVendorPrefix = getVendorPrefix;
 
-	var capitalize = _require.capitalize;
+	var _string = __webpack_require__(166);
 
 	/**
 	 * Get the vendor prefix for a property
 	 *
-	 * @param {array} 
+	 * @param {array}
 	 * @returns {string}
 	 */
-
 	function getVendorPrefix(property, el) {
 	  el = el || document.createElement('div');
 	  var prefixes = ['', 'ms', 'Moz', 'webkit'];
 	  var result = undefined;
 	  prefixes.forEach(function (prefix) {
 	    if (result) return;
-	    var prop = prefix ? prefix + capitalize(property) : property;
+	    var prop = prefix ? prefix + (0, _string.capitalize)(property) : property;
 	    if (typeof el.style[prop] !== 'undefined') {
 	      result = prop;
 	    }
@@ -21665,16 +21754,16 @@
 	  return result;
 	}
 
-	module.exports = {
-	  getVendorPrefix: getVendorPrefix
-	};
-
 /***/ },
-/* 164 */
+/* 166 */
 /***/ function(module, exports) {
 
 	"use strict";
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.capitalize = capitalize;
 	/**
 	 * Capitalizes the first character of `string`.
 	 *
@@ -21685,16 +21774,18 @@
 	  return string && string.charAt(0).toUpperCase() + string.slice(1);
 	}
 
-	module.exports = {
-	  capitalize: capitalize
-	};
-
 /***/ },
-/* 165 */
+/* 167 */
 /***/ function(module, exports) {
 
 	"use strict";
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.dropRight = dropRight;
+	exports.last = last;
+	exports.takeRight = takeRight;
 	/*!
 	 * Adapted from LoDash
 	 *
@@ -21761,21 +21852,19 @@
 	  return array.slice(n < 0 ? 0 : n);
 	}
 
-	module.exports = {
-	  dropRight: dropRight,
-	  last: last,
-	  takeRight: takeRight
-	};
-
 /***/ },
-/* 166 */
+/* 168 */
 /***/ function(module, exports) {
 
 	'use strict';
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.assign = assign;
 	/**
 	 * Merge sources into target
-	 * 
+	 *
 	 * @param {object} target
 	 * @param {arguments} soutces
 	 * @return {object}
@@ -21801,17 +21890,19 @@
 	  return to;
 	}
 
-	module.exports = {
-	  assign: assign
-	};
-
 /***/ },
-/* 167 */
+/* 169 */
 /***/ function(module, exports) {
 
 	"use strict";
 
-	var type = {
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.isPush = isPush;
+	exports.isCover = isCover;
+	exports.isReveal = isReveal;
+	var type = exports.type = {
 	  NONE: 0,
 	  PUSH_LEFT: 1,
 	  PUSH_RIGHT: 2,
@@ -21839,78 +21930,6 @@
 	  return t === type.REVEAL_LEFT || t === type.REVEAL_RIGHT || t === type.REVEAL_UP || t === type.REVEAL_DOWN;
 	}
 
-	module.exports = {
-	  type: type,
-	  isPush: isPush,
-	  isCover: isCover,
-	  isReveal: isReveal
-	};
-
-/***/ },
-/* 168 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;'use strict';
-
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
-
-	/*!
-	  Copyright (c) 2016 Jed Watson.
-	  Licensed under the MIT License (MIT), see
-	  http://jedwatson.github.io/classnames
-	*/
-	/* global define */
-
-	(function () {
-		'use strict';
-
-		var hasOwn = {}.hasOwnProperty;
-
-		function classNames() {
-			var classes = [];
-
-			for (var i = 0; i < arguments.length; i++) {
-				var arg = arguments[i];
-				if (!arg) continue;
-
-				var argType = typeof arg === 'undefined' ? 'undefined' : _typeof(arg);
-
-				if (argType === 'string' || argType === 'number') {
-					classes.push(arg);
-				} else if (Array.isArray(arg)) {
-					classes.push(classNames.apply(null, arg));
-				} else if (argType === 'object') {
-					for (var key in arg) {
-						if (hasOwn.call(arg, key) && arg[key]) {
-							classes.push(key);
-						}
-					}
-				}
-			}
-
-			return classes.join(' ');
-		}
-
-		if (typeof module !== 'undefined' && module.exports) {
-			module.exports = classNames;
-		} else if ("function" === 'function' && _typeof(__webpack_require__(169)) === 'object' && __webpack_require__(169)) {
-			// register as 'classnames', consistent with npm package name
-			!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-				return classNames;
-			}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-		} else {
-			window.classNames = classNames;
-		}
-	})();
-
-/***/ },
-/* 169 */
-/***/ function(module, exports) {
-
-	/* WEBPACK VAR INJECTION */(function(__webpack_amd_options__) {module.exports = __webpack_amd_options__;
-
-	/* WEBPACK VAR INJECTION */}.call(exports, {}))
-
 /***/ },
 /* 170 */
 /***/ function(module, exports, __webpack_require__) {
@@ -21919,16 +21938,27 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _navigationController = __webpack_require__(160);
+
+	var _navigationController2 = _interopRequireDefault(_navigationController);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var React = __webpack_require__(2);
-
-	var NavigationController = __webpack_require__(160);
-	var Transition = NavigationController.Transition;
+	var Transition = _navigationController2.default.Transition;
 
 	var colors = ['#0074D9', '#7FDBFF', '#39CCCC', '#2ECC40', '#FFDC00', '#FF851B', '#FF4136', '#F012BE', '#B10DC9'];
 
@@ -21965,7 +21995,7 @@
 	  }, {
 	    key: 'onNext',
 	    value: function onNext() {
-	      var view = React.createElement(View, { index: this.props.index + 1 });
+	      var view = _react2.default.createElement(View, { index: this.props.index + 1 });
 	      this.props.navigationController.pushView(view, {});
 	    }
 	  }, {
@@ -21978,7 +22008,7 @@
 	  }, {
 	    key: 'onModal',
 	    value: function onModal() {
-	      var view = React.createElement(View, { index: this.props.index + 1, modal: true });
+	      var view = _react2.default.createElement(View, { index: this.props.index + 1, modal: true });
 	      this.props.navigationController.pushView(view, {
 	        transition: Transition.type.COVER_UP
 	      });
@@ -21993,34 +22023,34 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      return React.createElement(
+	      return _react2.default.createElement(
 	        'div',
 	        {
 	          className: 'ReactNavigationControllerViewContent',
 	          style: { background: this.state.color } },
-	        React.createElement(
+	        _react2.default.createElement(
 	          'header',
 	          null,
 	          this.renderBackButton(),
 	          this.renderNextButton()
 	        ),
-	        React.createElement(
+	        _react2.default.createElement(
 	          'section',
 	          null,
-	          React.createElement(
+	          _react2.default.createElement(
 	            'h3',
 	            null,
 	            'View ',
 	            this.props.index
 	          ),
-	          React.createElement(
+	          _react2.default.createElement(
 	            'button',
 	            { onClick: this.incrementCounter.bind(this) },
 	            'Increment Counter (',
 	            this.state.counter,
 	            ')'
 	          ),
-	          React.createElement(
+	          _react2.default.createElement(
 	            'button',
 	            { onClick: this.onModal.bind(this) },
 	            'Show Modal'
@@ -22033,7 +22063,7 @@
 	    key: 'renderBackButton',
 	    value: function renderBackButton() {
 	      var text = this.props.modal ? 'Close' : 'Back';
-	      return this.props.index === 1 ? React.createElement('div', null) : React.createElement(
+	      return this.props.index === 1 ? _react2.default.createElement('div', null) : _react2.default.createElement(
 	        'button',
 	        { onClick: this.onBack.bind(this) },
 	        text
@@ -22042,7 +22072,7 @@
 	  }, {
 	    key: 'renderNextButton',
 	    value: function renderNextButton() {
-	      return this.props.modal === true ? React.createElement('div', null) : React.createElement(
+	      return this.props.modal === true ? _react2.default.createElement('div', null) : _react2.default.createElement(
 	        'button',
 	        { onClick: this.onNext.bind(this) },
 	        'Next'
@@ -22051,7 +22081,7 @@
 	  }, {
 	    key: 'renderPopToRootButton',
 	    value: function renderPopToRootButton() {
-	      return this.props.index === 1 ? React.createElement('div', null) : React.createElement(
+	      return this.props.index === 1 ? _react2.default.createElement('div', null) : _react2.default.createElement(
 	        'button',
 	        { onClick: this.onPopToRoot.bind(this) },
 	        'Pop To Root'
@@ -22060,13 +22090,13 @@
 	  }]);
 
 	  return View;
-	}(React.Component);
+	}(_react2.default.Component);
 
 	View.defaultProps = {
 	  index: 1
 	};
 
-	module.exports = View;
+	exports.default = View;
 
 /***/ }
 /******/ ]);
