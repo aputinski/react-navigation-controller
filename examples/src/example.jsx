@@ -1,8 +1,8 @@
-const React = require('react');
-const ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
-const NavigationController = require('../../src/navigation-controller');
-const View =require('./view');
+import NavigationController from '../../src/navigation-controller';
+import View from './view';
 
 class App extends React.Component {
   constructor(props) {

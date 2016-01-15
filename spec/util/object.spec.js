@@ -1,6 +1,6 @@
-const {
+import {
   assign
-} = require('../../src/util/object');
+} from '../../src/util/object';
 
 describe('Util', () => {
   describe('Object', () => {

@@ -1,23 +1,21 @@
-const React = require('react/addons');
-const {
+import React from 'react/addons';
+
+import {
   isCompositeComponent,
   renderIntoDocument
-} = React.addons.TestUtils;
+} from 'react-addons-test-utils';
 
-const rebound = require('rebound');
+import rebound from 'rebound';
 
-const NavigationController = require('../src/navigation-controller');
-const {
-  Transition
-} = NavigationController;
+import NavigationController from '../src/navigation-controller';
+import View from '../examples/src/view';
 
-const {
-  getVendorPrefix
-} = require('../src/util/dom');
+import { getVendorPrefix } from '../src/util/dom';
+
+const { Transition } = NavigationController;
 
 const transformPrefix = getVendorPrefix('transform');
 
-const View = require('../examples/src/view');
 class ViewA extends View { }
 class ViewB extends View { }
 class ViewC extends View { }

@@ -1,32 +1,24 @@
-const React = require('react');
+import React from 'react';
+import rebound from 'rebound';
+import classNames from 'classnames';
 
-const rebound = require('rebound');
+import { getVendorPrefix } from './util/dom';
+import { dropRight, last, takeRight } from './util/array';
+import { assign } from './util/object';
+
+import * as Transition from './util/transition';
+
 const {
   SpringSystem,
   SpringConfig,
   OrigamiValueConverter
 } = rebound;
+
 const {
   mapValueInRange
 } = rebound.MathUtil;
 
-const {
-  getVendorPrefix
-} = require('./util/dom');
 
-const {
-  dropRight,
-  last,
-  takeRight
-} = require('./util/array');
-
-const {
-  assign
-} = require('./util/object');
-
-const Transition = require('./util/transition');
-
-const classNames = require('classnames');
 const transformPrefix = getVendorPrefix('transform');
 
 const optionTypes = {
@@ -575,4 +567,4 @@ NavigationController.defaultProps = {
 
 NavigationController.Transition = Transition;
 
-module.exports = NavigationController;
+export default NavigationController;

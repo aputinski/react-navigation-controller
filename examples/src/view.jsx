@@ -1,6 +1,6 @@
-const React = require('react');
+import React from 'react';
+import NavigationController from '../../src/navigation-controller';
 
-const NavigationController = require('../../src/navigation-controller');
 const {
   Transition
 } = NavigationController;
@@ -95,4 +95,4 @@ View.defaultProps ={
   index: 1
 };
 
-module.exports = View;
+export default View;

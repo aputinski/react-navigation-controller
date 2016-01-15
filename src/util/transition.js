@@ -1,4 +1,4 @@
-const type = {
+export const type = {
   NONE: 0,
   PUSH_LEFT: 1,
   PUSH_RIGHT: 2,
@@ -14,30 +14,23 @@ const type = {
   REVEAL_DOWN: 12
 };
 
-function isPush(t) {
+export function isPush(t) {
   return t === type.PUSH_LEFT ||
          t === type.PUSH_RIGHT ||
          t === type.PUSH_UP ||
          t === type.PUSH_DOWN;
 }
 
-function isCover(t) {
+export function isCover(t) {
   return t === type.COVER_LEFT ||
          t === type.COVER_RIGHT ||
          t === type.COVER_UP ||
          t === type.COVER_DOWN;
 }
 
-function isReveal(t) {
+export function isReveal(t) {
   return t === type.REVEAL_LEFT ||
          t === type.REVEAL_RIGHT ||
          t === type.REVEAL_UP ||
          t === type.REVEAL_DOWN;
 }
-
-module.exports = {
-  type,
-  isPush,
-  isCover,
-  isReveal
-};

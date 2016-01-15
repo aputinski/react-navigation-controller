@@ -1,6 +1,6 @@
-const {
+import {
   capitalize
-} = require('../../src/util/string');
+} from '../../src/util/string';
 
 describe('Util', () => {
   describe('String', () => {

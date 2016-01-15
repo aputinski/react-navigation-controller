@@ -72,10 +72,6 @@ module.exports = function(config) {
       },
       resolve: {
         extensions: ['', '.js', '.jsx']
-      },
-      externals: {
-        'react': 'React',
-        'react/addons': 'React'
       }
     },
 

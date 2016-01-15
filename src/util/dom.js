@@ -1,14 +1,12 @@
-const {
-  capitalize
-} = require('./string');
+import { capitalize } from './string';
 
 /**
  * Get the vendor prefix for a property
  *
- * @param {array} 
+ * @param {array}
  * @returns {string}
  */
-function getVendorPrefix(property, el) {
+export function getVendorPrefix(property, el) {
   el = el || document.createElement('div');
   const prefixes = ['', 'ms', 'Moz', 'webkit'];
   let result;
@@ -21,7 +19,3 @@ function getVendorPrefix(property, el) {
   });
   return result;
 }
-
-module.exports = {
-  getVendorPrefix
-};

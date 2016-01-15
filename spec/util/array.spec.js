@@ -1,8 +1,8 @@
-const {
+import {
   dropRight,
   last,
   takeRight
-} = require('../../src/util/array');
+} from '../../src/util/array';
 
 describe('Util', () => {
   describe('Array', () => {

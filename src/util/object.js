@@ -1,11 +1,11 @@
 /**
  * Merge sources into target
- * 
+ *
  * @param {object} target
  * @param {arguments} soutces
  * @return {object}
  */
-function assign(target, sources) {
+export function assign(target, sources) {
   if (target == null) {
     throw new TypeError('Object.assign target cannot be null or undefined');
   }
@@ -25,7 +25,3 @@ function assign(target, sources) {
   }
   return to;
 }
-
-module.exports = {
-  assign
-};

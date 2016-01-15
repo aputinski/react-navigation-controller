@@ -1,6 +1,6 @@
-const {
+import {
   getVendorPrefix
-} = require('../../src/util/dom');
+} from '../../src/util/dom';
 
 describe('Util', () => {
   describe('DOM', () => {
