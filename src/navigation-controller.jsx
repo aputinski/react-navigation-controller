@@ -112,6 +112,12 @@ class NavigationController extends React.Component {
     });
   }
 
+  componentWillUnmount() {
+    delete this.__springSystem;
+    this.__spring.removeAllListeners();
+    delete this.__spring;
+  }
+
   componentDidMount() {
     // Cache the view wrappers
     this['__view-wrapper-0'] = React.findDOMNode(this.refs[`view-wrapper-0`]);
@@ -122,10 +128,6 @@ class NavigationController extends React.Component {
     this.pushView(last(this.props.views), {
       transition: Transition.type.NONE
     });
-  }
-
-  componentWillUnmount() {
-    this.__viewSpring.destroy();
   }
 
   /**
