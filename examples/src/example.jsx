@@ -1,4 +1,5 @@
 const React = require('react');
+const ReactDOM = require('react-dom');
 
 const NavigationController = require('../../src/navigation-controller');
 const View =require('./view');
@@ -29,4 +30,4 @@ class App extends React.Component {
   }
 }
 
-React.render(<App />, document.body);
+ReactDOM.render(<App />, document.getElementById('app'));

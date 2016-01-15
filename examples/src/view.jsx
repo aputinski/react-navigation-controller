@@ -7,7 +7,7 @@ const {
 
 const colors = [
   '#0074D9', '#7FDBFF',  '#39CCCC', '#2ECC40', '#FFDC00', '#FF851B', '#FF4136',
-  '#F012BE', '#B10DC9' 
+  '#F012BE', '#B10DC9'
 ];
 
 function getColor() {
@@ -33,9 +33,7 @@ class View extends React.Component {
   }
   onNext() {
     const view = <View index={this.props.index+1} />;
-    this.props.navigationController.pushView(view, {
-      
-    });
+    this.props.navigationController.pushView(view, {});
   }
   onBack() {
     this.props.navigationController.popView({
