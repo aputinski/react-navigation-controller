@@ -119,9 +119,6 @@ class NavigationController extends React.Component {
   }
 
   componentDidMount() {
-    // Cache the view wrappers
-    this['__view-wrapper-0'] = React.findDOMNode(this.refs[`view-wrapper-0`]);
-    this['__view-wrapper-1'] = React.findDOMNode(this.refs[`view-wrapper-1`]);
     // Position the wrappers
     this.__transformViews(0, 0, -100, 0);
     // Push the last view
@@ -132,7 +129,7 @@ class NavigationController extends React.Component {
 
   /**
    * Translate the view wrappers by a specified percentage
-   * 
+   *
    * @param {number} prevX
    * @param {number} prevY
    * @param {number} nextX
@@ -140,8 +137,8 @@ class NavigationController extends React.Component {
    */
   __transformViews(prevX, prevY, nextX, nextY) {
     const [prev,next] = this.__viewIndexes;
-    const prevView = this[`__view-wrapper-${prev}`];
-    const nextView = this[`__view-wrapper-${next}`];
+    const prevView = this.refs[`view-wrapper-${prev}`];
+    const nextView = this.refs[`view-wrapper-${next}`];
     requestAnimationFrame(() => {
       prevView.style[transformPrefix] = `translate3d(${prevX}%,${prevY}%,0px)`;
       prevView.style.zIndex = Transition.isReveal(this.state.transition) ? 1 : 0;
@@ -213,7 +210,7 @@ class NavigationController extends React.Component {
     this.__isTransitioning = false;
     const [prev,next] = this.__viewIndexes;
     // Hide the previous view wrapper
-    const prevViewWrapper = this[`__view-wrapper-${prev}`];
+    const prevViewWrapper = this.refs[`view-wrapper-${prev}`];
           prevViewWrapper.style.display = 'none';
     // Did hide view lifecycle event
     const prevView = this.refs['view-0'];
@@ -244,8 +241,8 @@ class NavigationController extends React.Component {
    * @param {string} value
    */
   __displayViews(value) {
-    this['__view-wrapper-0'].style.display = value;
-    this['__view-wrapper-1'].style.display = value;
+    this.refs['view-wrapper-0'].style.display = value;
+    this.refs['view-wrapper-1'].style.display = value;
   }
 
   /**
@@ -310,8 +307,8 @@ class NavigationController extends React.Component {
     // Custom transition
     if (typeof transition === 'function') {
       const [prev,next] = this.__viewIndexes;
-      const prevView = this[`__view-wrapper-${prev}`];
-      const nextView = this[`__view-wrapper-${next}`];
+      const prevView = this.refs[`view-wrapper-${prev}`];
+      const nextView = this.refs[`view-wrapper-${next}`];
       transition(prevView, nextView, () => {
         this.__animateViewsComplete();
         this.__transitionViewsComplete();

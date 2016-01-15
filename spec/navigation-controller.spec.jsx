@@ -31,8 +31,8 @@ describe('NavigationController', () => {
     controller = renderIntoDocument(
       <NavigationController views={views} />
     );
-    viewWrapper0 = controller['__view-wrapper-0'];
-    viewWrapper1 = controller['__view-wrapper-1'];
+    viewWrapper0 = controller.refs['view-wrapper-0'];
+    viewWrapper1 = controller.refs['view-wrapper-1'];
   });
   it('exports a component', () => {
     let controller = renderIntoDocument(
@@ -95,11 +95,6 @@ describe('NavigationController', () => {
     });
   });
   describe('#componentDidMount', () => {
-    it('caches the view wrappers', () => {
-      expect(viewWrapper0).to.be.an.instanceof(HTMLElement);
-      expect(viewWrapper1).to.be.an.instanceof(HTMLElement);
-      expect(viewWrapper0).not.to.equal(viewWrapper1);
-    });
     it('transforms the view wrappers', () => {
       expect(viewWrapper0).to.have.deep.property(`style.${transformPrefix}`);
       expect(viewWrapper1).to.have.deep.property(`style.${transformPrefix}`);
@@ -252,7 +247,7 @@ describe('NavigationController', () => {
       controller.__animateViewsComplete();
       const [prev,next] = controller.__viewIndexes;
       requestAnimationFrame(() => {
-        expect(controller[`__view-wrapper-${prev}`].style.display).to.equal('none');
+        expect(controller.refs[`view-wrapper-${prev}`].style.display).to.equal('none');
         done();
       });
     });
@@ -291,16 +286,16 @@ describe('NavigationController', () => {
     it('hides the views', (done) => {
       controller.__displayViews('none');
       requestAnimationFrame(() => {
-        expect(controller[`__view-wrapper-0`].style.display).to.equal('none');
-        expect(controller[`__view-wrapper-1`].style.display).to.equal('none');
+        expect(controller.refs[`view-wrapper-0`].style.display).to.equal('none');
+        expect(controller.refs[`view-wrapper-1`].style.display).to.equal('none');
         done();
       });
     });
     it('shows the views', (done) => {
       controller.__displayViews('block');
       requestAnimationFrame(() => {
-        expect(controller[`__view-wrapper-0`].style.display).to.equal('block');
-        expect(controller[`__view-wrapper-1`].style.display).to.equal('block');
+        expect(controller.refs[`view-wrapper-0`].style.display).to.equal('block');
+        expect(controller.refs[`view-wrapper-1`].style.display).to.equal('block');
         done();
       });
     });
