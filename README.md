@@ -18,8 +18,8 @@ npm install react-navigation-controller
 ## Usage
 
 ```jsx
-const React = require('react');
-const NavigationController = require('react-navigation-controller');
+import React from 'react';
+import NavigationController from 'react-navigation-controller';
 
 class LoginView extends React.Component {
   onLogin() {
