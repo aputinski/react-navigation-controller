@@ -2,7 +2,7 @@
 // Generated on Sat Mar 28 2015 02:55:40 GMT-0400 (EDT)
 
 module.exports = function(config) {
-  config.set({
+  var c = {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
@@ -13,8 +13,6 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'spec/helpers.js',
-      'node_modules/react/dist/react-with-addons.js',
       'node_modules/sinon/pkg/sinon.js',
       'spec/**/*.spec.+(jsx|js)'
     ],
@@ -48,7 +46,14 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
+    browsers: ['Chrome'],
+
+    customLaunchers: {
+      ChromeTravis: {
+        base: 'Chrome',
+        flags: ['--no-sandbox']
+      }
+    },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -59,8 +64,7 @@ module.exports = function(config) {
       'karma-chai',
       'karma-webpack',
       'karma-spec-reporter',
-      'karma-chrome-launcher',
-      'karma-phantomjs-launcher'
+      'karma-chrome-launcher'
     ],
 
     webpack: {
@@ -79,5 +83,11 @@ module.exports = function(config) {
       noInfo: true
     }
 
-  });
+  };
+
+  if (process.env.TRAVIS) {
+    c.browsers = ['ChromeTravis'];
+  }
+
+  config.set(c);
 };
