@@ -10,11 +10,7 @@ import rebound from 'rebound';
 import NavigationController from '../src/navigation-controller';
 import View from '../examples/src/view';
 
-import { getVendorPrefix } from '../src/util/dom';
-
 const { Transition } = NavigationController;
-
-const transformPrefix = getVendorPrefix('transform');
 
 class ViewA extends View { }
 class ViewB extends View { }
@@ -94,8 +90,8 @@ describe('NavigationController', () => {
   });
   describe('#componentDidMount', () => {
     it('transforms the view wrappers', () => {
-      expect(viewWrapper0).to.have.deep.property(`style.${transformPrefix}`);
-      expect(viewWrapper1).to.have.deep.property(`style.${transformPrefix}`);
+      expect(viewWrapper0).to.have.deep.property(`style.transform`);
+      expect(viewWrapper1).to.have.deep.property(`style.transform`);
     });
   });
   describe('#__transformViews', () => {
@@ -107,8 +103,8 @@ describe('NavigationController', () => {
     it('translates the views', (done) => {
       controller.__transformViews(10, 20, 30, 40);
       requestAnimationFrame(() => {
-        expect(viewWrapper1.style[transformPrefix]).to.equal(`translate3d(10%, 20%, 0px)`);
-        expect(viewWrapper0.style[transformPrefix]).to.equal(`translate3d(30%, 40%, 0px)`);
+        expect(viewWrapper1.style.transform).to.equal(`translate(10%, 20%)`);
+        expect(viewWrapper0.style.transform).to.equal(`translate(30%, 40%)`);
         done();
       });
     });
@@ -356,13 +352,13 @@ describe('NavigationController', () => {
         transition(prevElement, nextElement, done) {
           _prevElement = prevElement;
           _nextElement = nextElement;
-          prevElement.style[transformPrefix] = 'translate3d(10px, 20px, 0px)';
-          nextElement.style[transformPrefix] = 'translate3d(30px, 40px, 0px)';
+          prevElement.style.transform = 'translate(10px, 20px)';
+          nextElement.style.transform = 'translate(30px, 40px)';
           setTimeout(done, 500);
         },
         onComplete() {
-          expect(_prevElement.style[transformPrefix]).to.equal(`translate3d(10px, 20px, 0px)`);
-          expect(_nextElement.style[transformPrefix]).to.equal(`translate3d(30px, 40px, 0px)`);
+          expect(_prevElement.style.transform).to.equal(`translate(10px, 20px)`);
+          expect(_nextElement.style.transform).to.equal(`translate(30px, 40px)`);
           done();
         }
       });

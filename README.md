@@ -120,8 +120,8 @@ A function can be used to perform custom transitions:
 navigationController.pushView(<MyView />, {
   transition(prevElement, nextElement, done) {
     // Do some sort of animation on the views
-    prevElement.style.transform = 'translate3d(100%, 0, 0)';
-    nextElement.style.transform = 'translate3d(0, 0, 0)';
+    prevElement.style.transform = 'translate(100%, 0)';
+    nextElement.style.transform = 'translate(0, 0)';
     // Tell the navigationController when the animation is complete
     setTimeout(done, 500);
   }
