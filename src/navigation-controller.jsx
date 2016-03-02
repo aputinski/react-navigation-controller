@@ -2,7 +2,6 @@ import React from 'react';
 import rebound from 'rebound';
 import classNames from 'classnames';
 
-import { getVendorPrefix } from './util/dom';
 import { dropRight, last, takeRight } from './util/array';
 import { assign } from './util/object';
 
@@ -17,9 +16,6 @@ const {
 const {
   mapValueInRange
 } = rebound.MathUtil;
-
-
-const transformPrefix = getVendorPrefix('transform');
 
 const optionTypes = {
   pushView: {
@@ -132,9 +128,9 @@ class NavigationController extends React.Component {
     const prevView = this.refs[`view-wrapper-${prev}`];
     const nextView = this.refs[`view-wrapper-${next}`];
     requestAnimationFrame(() => {
-      prevView.style[transformPrefix] = `translate3d(${prevX}%,${prevY}%,0px)`;
+      prevView.style.transform = `translate(${prevX}%,${prevY}%)`;
       prevView.style.zIndex = Transition.isReveal(this.state.transition) ? 1 : 0;
-      nextView.style[transformPrefix] = `translate3d(${nextX}%,${nextY}%,0px)`;
+      nextView.style.transform = `translate(${nextX}%,${nextY}%)`;
       nextView.style.zIndex = Transition.isReveal(this.state.transition) ? 0 : 1;
     });
   }
