@@ -67,7 +67,7 @@
 
 	var _navigationController2 = _interopRequireDefault(_navigationController);
 
-	var _view = __webpack_require__(170);
+	var _view = __webpack_require__(168);
 
 	var _view2 = _interopRequireDefault(_view);
 
@@ -19809,13 +19809,11 @@
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
-	var _dom = __webpack_require__(165);
+	var _array = __webpack_require__(165);
 
-	var _array = __webpack_require__(167);
+	var _object = __webpack_require__(166);
 
-	var _object = __webpack_require__(168);
-
-	var _transition = __webpack_require__(169);
+	var _transition = __webpack_require__(167);
 
 	var Transition = _interopRequireWildcard(_transition);
 
@@ -19833,8 +19831,6 @@
 	var SpringConfig = _rebound2.default.SpringConfig;
 	var OrigamiValueConverter = _rebound2.default.OrigamiValueConverter;
 	var mapValueInRange = _rebound2.default.MathUtil.mapValueInRange;
-
-	var transformPrefix = (0, _dom.getVendorPrefix)('transform');
 
 	var optionTypes = {
 	  pushView: {
@@ -19951,9 +19947,9 @@
 	      var prevView = this.refs['view-wrapper-' + prev];
 	      var nextView = this.refs['view-wrapper-' + next];
 	      requestAnimationFrame(function () {
-	        prevView.style[transformPrefix] = 'translate3d(' + prevX + '%,' + prevY + '%,0px)';
+	        prevView.style.transform = 'translate(' + prevX + '%,' + prevY + '%)';
 	        prevView.style.zIndex = Transition.isReveal(_this2.state.transition) ? 1 : 0;
-	        nextView.style[transformPrefix] = 'translate3d(' + nextX + '%,' + nextY + '%,0px)';
+	        nextView.style.transform = 'translate(' + nextX + '%,' + nextY + '%)';
 	        nextView.style.zIndex = Transition.isReveal(_this2.state.transition) ? 0 : 1;
 	      });
 	    }
@@ -21723,59 +21719,6 @@
 
 /***/ },
 /* 165 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.getVendorPrefix = getVendorPrefix;
-
-	var _string = __webpack_require__(166);
-
-	/**
-	 * Get the vendor prefix for a property
-	 *
-	 * @param {array}
-	 * @returns {string}
-	 */
-	function getVendorPrefix(property, el) {
-	  el = el || document.createElement('div');
-	  var prefixes = ['', 'ms', 'Moz', 'webkit'];
-	  var result = undefined;
-	  prefixes.forEach(function (prefix) {
-	    if (result) return;
-	    var prop = prefix ? prefix + (0, _string.capitalize)(property) : property;
-	    if (typeof el.style[prop] !== 'undefined') {
-	      result = prop;
-	    }
-	  });
-	  return result;
-	}
-
-/***/ },
-/* 166 */
-/***/ function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.capitalize = capitalize;
-	/**
-	 * Capitalizes the first character of `string`.
-	 *
-	 * @param {string} [string=''] The string to capitalize.
-	 * @returns {string} Returns the capitalized string.
-	 */
-	function capitalize(string) {
-	  return string && string.charAt(0).toUpperCase() + string.slice(1);
-	}
-
-/***/ },
-/* 167 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21853,7 +21796,7 @@
 	}
 
 /***/ },
-/* 168 */
+/* 166 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -21891,7 +21834,7 @@
 	}
 
 /***/ },
-/* 169 */
+/* 167 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -21931,7 +21874,7 @@
 	}
 
 /***/ },
-/* 170 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
