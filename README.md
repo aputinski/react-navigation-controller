@@ -17,7 +17,7 @@ npm install react-navigation-controller
 
 ## Usage
 
-```jsx
+```js
 import React from 'react';
 import NavigationController from 'react-navigation-controller';
 
