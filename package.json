@@ -13,7 +13,8 @@
     "test": "./node_modules/karma/bin/karma start",
     "dist": "babel src --out-dir dist",
     "dist/example": "webpack --dist",
-    "prepublish": "npm run dist"
+    "prepublish": "npm run dist",
+    "lint": "standard"
   },
   "repository": {
     "type": "git",
@@ -43,7 +44,14 @@
     "react-addons-test-utils": "^0.14.6",
     "react-dom": "^0.14.6",
     "sinon": "^1.17.2",
+    "standard": "^8.0.0-beta.5",
     "webpack": "^1.12.11",
     "webpack-dev-server": "^1.14.1"
+  },
+  "standard": {
+    "ignore": [
+      "node_modules/**/*",
+      "examples/assets/**/*"
+    ]
   }
 }

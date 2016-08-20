@@ -23,13 +23,13 @@
  * @param {number} [n=1] The number of elements to drop.
  * @returns {array} Returns the slice of `array`.
  */
-export function dropRight(array, n=1) {
-  const length = array ? array.length : 0;
+export function dropRight (array, n = 1) {
+  const length = array ? array.length : 0
   if (!length) {
-    return [];
+    return []
   }
-  n = length - (+n || 0);
-  return array.slice(0, n < 0 ? 0 : n);
+  n = length - (+n || 0)
+  return array.slice(0, n < 0 ? 0 : n)
 }
 
 /**
@@ -39,9 +39,9 @@ export function dropRight(array, n=1) {
  * @param {number} [n=1] The number of elements to drop.
  * @returns {*} Returns the last element of `array`.
  */
-export function last(array) {
-  const length = array ? array.length : 0;
-  return length ? array[length - 1] : undefined;
+export function last (array) {
+  const length = array ? array.length : 0
+  return length ? array[length - 1] : undefined
 }
 
 /**
@@ -51,11 +51,11 @@ export function last(array) {
  * @param {number} [n=1] The number of elements to take.
  * @returns {array} Returns the slice of `array`.
  */
-export function takeRight(array, n=1) {
-  var length = array ? array.length : 0;
+export function takeRight (array, n = 1) {
+  var length = array ? array.length : 0
   if (!length) {
-    return [];
+    return []
   }
-  n = length - (+n || 0);
-  return array.slice(n < 0 ? 0 : n);
+  n = length - (+n || 0)
+  return array.slice(n < 0 ? 0 : n)
 }

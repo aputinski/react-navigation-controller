@@ -1,33 +1,30 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-import NavigationController from '../../src/navigation-controller';
-import View from './view';
+import NavigationController from '../../src/navigation-controller'
+import View from './view'
 
 class App extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-  render() {
+  render () {
     return (
       <main>
         <h2>Single View</h2>
         <p>Start with a single view on the stack</p>
         <NavigationController
           views={[<View />]}
-          preserveState={true}
+          preserveState
           transitionTension={10}
           transitionFriction={6} />
         <h2>Multiple Views</h2>
         <p>Start with multiple views on the stack</p>
         <NavigationController
           views={[<View />, <View index={2} />, <View index={3} />]}
-          preserveState={true}
+          preserveState
           transitionTension={10}
           transitionFriction={6} />
       </main>
-    );
+    )
   }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'))

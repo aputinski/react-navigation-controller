@@ -1,13 +1,13 @@
-var argv = require('minimist')(process.argv.slice(2));
+var argv = require('minimist')(process.argv.slice(2))
 
 var entry = {
   example: [
-    './examples/src/example.jsx',
+    './examples/src/example.jsx'
   ]
-};
+}
 
 if (argv.dist !== true) {
-  entry.example.push('webpack/hot/dev-server');
+  entry.example.push('webpack/hot/dev-server')
 }
 
 module.exports = {
@@ -26,4 +26,4 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx']
   }
-};
+}
