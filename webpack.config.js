@@ -1,6 +1,6 @@
-var argv = require('minimist')(process.argv.slice(2))
+const argv = require('minimist')(process.argv.slice(2))
 
-var entry = {
+const entry = {
   example: [
     './examples/src/example.jsx'
   ]
@@ -11,7 +11,7 @@ if (argv.dist !== true) {
 }
 
 module.exports = {
-  entry: entry,
+  entry,
   output: {
     path: './examples/assets',
     filename: '[name].js',
