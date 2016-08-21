@@ -1,6 +1,6 @@
 /* global describe, it, beforeEach, expect, requestAnimationFrame, sinon */
 
-import React from 'react/addons'
+import React from 'react'
 
 import {
   isCompositeComponent,

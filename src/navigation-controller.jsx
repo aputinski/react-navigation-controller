@@ -19,39 +19,42 @@ const {
   mapValueInRange
 } = rebound.MathUtil
 
+const isNumber = (value) =>
+  typeof value === 'number'
+const isFunction = (value) =>
+  typeof value === 'function'
+const isBool = (value) =>
+  value === true || value === false
+const isArray = (value) =>
+  Array.isArray(value)
+
+const validate = (validator) => (options, key, method) => {
+  if (!validator(options[key])) {
+    throw new Error(`Option "${key}" of method "${method}" was invalid`)
+  }
+}
+
 const optionTypes = {
   pushView: {
-    view: React.PropTypes.element.isRequired,
-    transition: React.PropTypes.oneOfType([
-      React.PropTypes.func,
-      React.PropTypes.number
-    ]),
-    onComplete: React.PropTypes.func
+    view: validate(React.isValidElement),
+    transition: validate(x => isFunction(x) || isNumber(x)),
+    onComplete: validate(isFunction)
   },
   popView: {
-    transition: React.PropTypes.oneOfType([
-      React.PropTypes.func,
-      React.PropTypes.number
-    ]),
-    onComplete: React.PropTypes.func
+    transition: validate(x => isFunction(x) || isNumber(x)),
+    onComplete: validate(isFunction)
   },
   popToRootView: {
-    transition: React.PropTypes.oneOfType([
-      React.PropTypes.func,
-      React.PropTypes.number
-    ]),
-    onComplete: React.PropTypes.func
+    transition: validate(x => isFunction(x) || isNumber(x)),
+    onComplete: validate(isFunction)
   },
   setViews: {
-    views: React.PropTypes.arrayOf(
-      React.PropTypes.element
-    ).isRequired,
-    preserveState: React.PropTypes.bool,
-    transition: React.PropTypes.oneOfType([
-      React.PropTypes.func,
-      React.PropTypes.number
-    ]),
-    onComplete: React.PropTypes.func
+    views: validate(x => isArray(x) && x.reduce((valid, e) => {
+      return valid === false ? false : React.isValidElement(e)
+    }, true) === true),
+    preserveState: validate(isBool),
+    transition: validate(x => isFunction(x) || isNumber(x)),
+    onComplete: validate(isFunction)
   }
 }
 
@@ -65,7 +68,7 @@ function checkOptions (method, options) {
   const optionType = optionTypes[method]
   Object.keys(options).forEach(key => {
     if (optionType[key]) {
-      const e = optionType[key](options, key, method, 'prop')
+      const e = optionType[key](options, key, method)
       if (e) throw e
     }
   })
