@@ -22,6 +22,16 @@ class App extends React.Component {
           preserveState
           transitionTension={10}
           transitionFriction={6} />
+        <h2>Preserve DOM</h2>
+        <p>
+          Preserve DOM for views on the stack, so that all status including
+          srolling position can be reserved.
+        </p>
+        <NavigationController
+          views={[<View />]}
+          preserveDom
+          transitionTension={10}
+          transitionFriction={6} />
       </main>
     )
   }

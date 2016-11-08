@@ -1,10 +1,9 @@
 /* global requestAnimationFrame */
-
 import React from 'react'
 import rebound from 'rebound'
 import classNames from 'classnames'
 
-import { dropRight, last, takeRight } from './util/array'
+import { dropRight, last } from './util/array'
 import { assign } from './util/object'
 
 import * as Transition from './util/transition'
@@ -53,6 +52,7 @@ const optionTypes = {
       return valid === false ? false : React.isValidElement(e)
     }, true) === true),
     preserveState: validate(isBool),
+    preserveDom: validate(isBool),
     transition: validate(x => isFunction(x) || isNumber(x)),
     onComplete: validate(isFunction)
   }
@@ -78,10 +78,11 @@ class NavigationController extends React.Component {
 
   constructor (props) {
     super(props)
-    const { views, preserveState } = this.props
+    const { views, preserveState, preserveDom } = this.props
     this.state = {
       views: dropRight(views),
       preserveState,
+      preserveDom,
       mountedViews: []
     }
     // React no longer auto binds
@@ -94,7 +95,7 @@ class NavigationController extends React.Component {
   componentWillMount () {
     this.__isTransitioning = false
     this.__viewStates = []
-    this.__viewIndexes = [0, 1]
+    this.__viewIndexes = [null, null]
     this.__springSystem = new SpringSystem()
     this.__spring = this.__springSystem.createSpring(
       this.props.transitionTension,
@@ -113,8 +114,6 @@ class NavigationController extends React.Component {
   }
 
   componentDidMount () {
-    // Position the wrappers
-    this.__transformViews(0, 0, -100, 0)
     // Push the last view
     this.pushView(last(this.props.views), {
       transition: Transition.type.NONE
@@ -209,26 +208,31 @@ class NavigationController extends React.Component {
     const prevViewWrapper = this.refs[`view-wrapper-${prev}`]
     prevViewWrapper.style.display = 'none'
     // Did hide view lifecycle event
-    const prevView = this.refs['view-0']
+    const prevView = this.refs[`view-${prev}`]
     if (prevView && typeof prevView.navigationControllerDidHideView === 'function') {
       prevView.navigationControllerDidHideView(this)
     }
     // Did show view lifecycle event
-    const nextView = this.refs['view-1']
+    const nextView = this.refs[`view-${next}`]
     if (nextView && typeof nextView.navigationControllerDidShowView === 'function') {
       nextView.navigationControllerDidShowView(this)
     }
-    // Unmount the previous view
-    const mountedViews = []
-    mountedViews[prev] = null
-    mountedViews[next] = last(this.state.views)
 
-    this.setState({
-      transition: null,
-      mountedViews: mountedViews
-    }, () => {
-      this.__viewIndexes = this.__viewIndexes[0] === 0 ? [1, 0] : [0, 1]
-    })
+    if (this.__nextViewList) {
+      const topViewIndex = this.__nextViewList.length - 1
+      this.setState({
+        transition: null,
+        views: this.__nextViewList,
+        mountedViews: [topViewIndex]
+      })
+      this.__nextViewList = null
+    } else {
+      const topViewIndex = this.state.views.length - 1
+      this.setState({
+        transition: null,
+        mountedViews: [topViewIndex]
+      })
+    }
   }
 
   /**
@@ -237,8 +241,9 @@ class NavigationController extends React.Component {
    * @param {string} value
    */
   __displayViews (value) {
-    this.refs['view-wrapper-0'].style.display = value
-    this.refs['view-wrapper-1'].style.display = value
+    const [prev, next] = this.__viewIndexes
+    this.refs[`view-wrapper-${prev}`].style.display = value
+    this.refs[`view-wrapper-${next}`].style.display = value
   }
 
   /**
@@ -342,24 +347,23 @@ class NavigationController extends React.Component {
     checkOptions('pushView', options)
     if (this.__isTransitioning) return
     const {transition} = options
-    const [prev, next] = this.__viewIndexes
     let views = this.state.views.slice()
-    // Alternate mounted views order
-    const mountedViews = []
-    mountedViews[prev] = last(views)
-    mountedViews[next] = view
+    // It's OK when length is 0, we have a view-wrapper--1.
+    const prev = views.length - 1
+    const next = prev + 1
+    this.__viewIndexes = [prev, next]
     // Add the new view
     views = views.concat(view)
-    // Show the wrappers
-    this.__displayViews('block')
     // Push the view
     this.setState({
       transition,
       views,
-      mountedViews
+      mountedViews: this.__viewIndexes
     }, () => {
+      // Show the wrappers
+      this.__displayViews('block')
       // The view about to be hidden
-      const prevView = this.refs[`view-0`]
+      const prevView = this.refs[`view-${prev}`]
       if (prevView && this.state.preserveState) {
         // Save the state before it gets unmounted
         this.__viewStates.push(prevView.state)
@@ -389,23 +393,20 @@ class NavigationController extends React.Component {
     }
     if (this.__isTransitioning) return
     const {transition} = options
-    const [prev, next] = this.__viewIndexes
-    const views = dropRight(this.state.views)
-    // Alternate mounted views order
-    const p = takeRight(this.state.views, 2).reverse()
-    const mountedViews = []
-    mountedViews[prev] = p[0]
-    mountedViews[next] = p[1]
+    const prev = this.state.views.length - 1
+    const next = prev - 1
+    this.__viewIndexes = [prev, next]
+
+    this.__nextViewList = dropRight(this.state.views)
     // Show the wrappers
     this.__displayViews('block')
     // Pop the view
     this.setState({
       transition,
-      views,
-      mountedViews
+      mountedViews: this.__viewIndexes
     }, () => {
       // The view about to be shown
-      const nextView = this.refs[`view-1`]
+      const nextView = this.refs[`view-${next}`]
       if (nextView && this.state.preserveState) {
         const state = this.__viewStates.pop()
         // Rehydrate the state
@@ -428,17 +429,19 @@ class NavigationController extends React.Component {
    * @param {function} [options.onComplete] - Called once the transition is complete
    * @param {number|function} [options.transition] - The transition type or custom transition
    * @param {boolean} [options.preserveState] - Wheter or not view states should be rehydrated
+   * @param {boolean} [options.preserveDom] - Wheter or not view dom should be kept
    */
   __setViews (views, options) {
     options = typeof options === 'object' ? options : {}
     checkOptions('setViews', options)
-    const {onComplete, preserveState} = options
+    const {onComplete, preserveState, preserveDom} = options
     options = assign({}, options, {
       onComplete: () => {
         this.__viewStates.length = 0
         this.setState({
           views,
-          preserveState
+          preserveState,
+          preserveDom
         }, () => {
           if (onComplete) {
             onComplete()
@@ -461,21 +464,16 @@ class NavigationController extends React.Component {
     }
     if (this.__isTransitioning) return
     const {transition} = options
-    const [prev, next] = this.__viewIndexes
     const rootView = this.state.views[0]
-    const topView = last(this.state.views)
-    const mountedViews = []
-    mountedViews[prev] = topView
-    mountedViews[next] = rootView
+    this.__viewIndexes = [this.state.views.length - 1, 0]
     // Display only the root view
-    const views = [rootView]
+    this.__nextViewList = [rootView]
     // Show the wrappers
     this.__displayViews('block')
     // Pop from the top view, all the way to the root view
     this.setState({
       transition,
-      views,
-      mountedViews
+      mountedViews: this.__viewIndexes
     }, () => {
       // The view that will be shown
       const rootView = this.refs[`view-1`]
@@ -510,20 +508,14 @@ class NavigationController extends React.Component {
     this.__setViews(...arguments)
   }
 
-  __renderPrevView () {
-    const view = this.state.mountedViews[0]
-    if (!view) return null
-    return React.cloneElement(view, {
-      ref: `view-${this.__viewIndexes[0]}`,
-      navigationController: this
-    })
-  }
-
-  __renderNextView () {
-    const view = this.state.mountedViews[1]
-    if (!view) return null
-    return React.cloneElement(view, {
-      ref: `view-${this.__viewIndexes[1]}`,
+  __renderNode (node, index) {
+    if (!node) return null
+    // If not preserveDom and this view is not visible now, return null.
+    if (!this.props.preserveDom && this.state.mountedViews.indexOf(index) === -1) {
+      return null
+    }
+    return React.cloneElement(node, {
+      ref: `view-${index}`,
       navigationController: this
     })
   }
@@ -537,16 +529,14 @@ class NavigationController extends React.Component {
     })
     return (
       <div className={className}>
-        <div
-          className={wrapperClassName}
-          ref={'view-wrapper-0'}>
-          {this.__renderPrevView()}
-        </div>
-        <div
-          className={wrapperClassName}
-          ref={'view-wrapper-1'}>
-          {this.__renderNextView()}
-        </div>
+        <div ref='view-wrapper--1' /> {/* wrapper -1, for pushing the first view */}
+        {
+          this.state.views.map((item, index) => {
+            return <div key={index} ref={`view-wrapper-${index}`} className={wrapperClassName}>
+              {this.__renderNode(item, index)}
+            </div>
+          })
+        }
       </div>
     )
   }
@@ -558,6 +548,7 @@ NavigationController.propTypes = {
     React.PropTypes.element
   ).isRequired,
   preserveState: React.PropTypes.bool,
+  preserveDom: React.PropTypes.bool,
   transitionTension: React.PropTypes.number,
   transitionFriction: React.PropTypes.number,
   className: React.PropTypes.oneOf([
@@ -568,6 +559,7 @@ NavigationController.propTypes = {
 
 NavigationController.defaultProps = {
   preserveState: false,
+  preserveDom: false,
   transitionTension: 10,
   transitionFriction: 6
 }
