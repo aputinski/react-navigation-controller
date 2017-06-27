@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 /* global requestAnimationFrame */
 
 import React from 'react'
@@ -554,15 +555,15 @@ class NavigationController extends React.Component {
 }
 
 NavigationController.propTypes = {
-  views: React.PropTypes.arrayOf(
-    React.PropTypes.element
+  views: PropTypes.arrayOf(
+    PropTypes.element
   ).isRequired,
-  preserveState: React.PropTypes.bool,
-  transitionTension: React.PropTypes.number,
-  transitionFriction: React.PropTypes.number,
-  className: React.PropTypes.oneOf([
-    React.PropTypes.string,
-    React.PropTypes.object
+  preserveState: PropTypes.bool,
+  transitionTension: PropTypes.number,
+  transitionFriction: PropTypes.number,
+  className: PropTypes.oneOf([
+    PropTypes.string,
+    PropTypes.object
   ])
 }
 
