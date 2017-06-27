@@ -1,7 +1,7 @@
 /* global requestAnimationFrame */
 
 import React from 'react'
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
 import rebound from 'rebound'
 import classNames from 'classnames'
 
