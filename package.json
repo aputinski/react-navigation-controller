@@ -23,6 +23,7 @@
   "author": "Adam Putinski",
   "dependencies": {
     "classnames": "2.2.5",
+    "prop-types": "^15.5.10",
     "rebound": "0.0.13"
   },
   "devDependencies": {
