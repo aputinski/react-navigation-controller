@@ -561,7 +561,7 @@ NavigationController.propTypes = {
   preserveState: PropTypes.bool,
   transitionTension: PropTypes.number,
   transitionFriction: PropTypes.number,
-  className: PropTypes.oneOf([
+  className: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.object
   ])
